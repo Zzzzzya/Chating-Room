@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.15)
+project(server)
+include_directories(${CMAKE_SOURCE_DIR}/server/include)
+file(GLOB SRC ${CMAKE_SOURCE_DIR}/server/src/*.cpp)
+add_executable(server ${SRC})
