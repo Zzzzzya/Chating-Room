@@ -94,7 +94,7 @@
     <string>好友申请</string>
    </property>
   </widget>
-  <widget class="QWidget" name="widget" native="true">
+  <widget class="QListWidget" name="listWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -102,6 +102,9 @@
      <width>250</width>
      <height>270</height>
     </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOn</enum>
    </property>
   </widget>
  </widget>

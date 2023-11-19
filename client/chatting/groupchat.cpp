@@ -6,6 +6,7 @@
 #include "addapply.h"
 #include "online.h"
 #include<QToolButton>
+#include<QVBoxLayout>
 
 groupchat::groupchat(QWidget *parent) :
     QWidget(parent),
@@ -13,12 +14,10 @@ groupchat::groupchat(QWidget *parent) :
 {
     ui->setupUi(this);
     setFixedSize(250,410);
-    showOnlineNum(5);
-    //先统计群数,在定义出群名称
-    //int cnt=5;
     online on;
     on.getgroupName();
     showOnlineNumber(on.groupName);
+    showOnlineNum(on.groupName.size());
 }
 
 groupchat::~groupchat()
@@ -74,18 +73,25 @@ void groupchat::showOnlineNum(int total)
 //打印群在线人信息
 void groupchat::showOnlineNumber(QVector<QString> &group_name)
 {
-    QVector<QToolButton *>vToolBtn;
     for(int i=0;i<group_name.size();i++)
     {
+
         QToolButton *btn=new QToolButton;
-        //名字
+        //btn->setFixedSize(250,40);
         btn->setText(group_name[i]);
-        //图片加载
-        //目前还没定义好
-        btn->setAutoRaise(true);  //设置图片透明效果
+        btn->setIcon(QPixmap(":/picture/11.gif"));
+        btn->setIconSize(QSize(30,30));
         btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
+        //将按钮添加到listWidget中的方法
+        QListWidgetItem *item =new QListWidgetItem();
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item,btn);
+
     }
+
 }
+
+
 
 
 
