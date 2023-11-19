@@ -1,5 +1,7 @@
 #include "l_friend.h"
 #include "l_group.h"
+
+#include "mainwindow.h"
 #include "add_friend.h"
 #include "set_group.h"
 #include "new_friend.h"
@@ -46,6 +48,14 @@ void L_friend::on_btn_apfriend_clicked()
 {
     New_friend *nf = new New_friend();
     nf->show();
+    this->hide();
+}
+
+
+void L_friend::on_btn_logout_clicked()
+{
+    MainWindow *mw = new MainWindow();
+    mw->show();
     this->hide();
 }
 

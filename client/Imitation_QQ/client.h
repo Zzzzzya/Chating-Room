@@ -1,56 +1,44 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <QMainWindow>
-#include <QTcpSocket>
 #include <QObject>
-#include <QHostAddress>
-#include <QDataStream>
-#include <QTextStream>
-#include <QDebug>
+#include <string>
+#include <winsock2.h>
+using namespace std;
+#pragma comment(lib, "ws2_32.lib")
 
-class Client : public QMainWindow
+enum MsgType {
+    Login,          // 登录报文
+    Register,       // 注册报文
+    Msg,            // 普通信息
+    UsrEnter,       // 用户进入
+    UsrLeft,         // 用户退出
+};
+
+class Client : public QObject
 {
-    Q_OBJECT
 public:
-    // 构造函数和析构函数
-    explicit Client(QWidget *parent = nullptr);
+    explicit Client(QObject *parent = nullptr);
+    Client(const string serverIP, int serverPort);
     ~Client();
 
-// 用于响应与信号相关的事件
-public slots:
-    // 用于与服务器建立连接
-    void connectToServer(const QString &serverAddress, quint16 port);
+    // 向服务器发送 注册/登录 信息
+    void sendMessage_special(MsgType type, const string username, const string password, const string serverIP, int serverPort);	// 登录&注册消息
 
-    // 用于向服务器发送消息
-    void sendMessage(const QString &message);
-
-    // 用于与服务器断开连接
-    void disconnectFromServer();
-
-private slots:
-    // 用于从服务器读取传入消息
-    void readMessage();
-
-
-// 用于在特定事件发生时要发出的信号
-signals:
-    // 当客户端成功连接到服务器时发出
-    void connected();
-
-    // 当客户端与服务器断开连接时发出
-    void disconnected();
-
-    // 当从服务器接收到消息时发出
-    void messageReceived(const QString &message);
-
-    // 在通信过程中发生错误时发出
-    void errorOccurred(const QString &errorString);
-
+    //  发送其他信息
+    void sendMessage_normal(MsgType type, const string username, const string content, int port);	// 一般消息
 
 private:
-    // TCP套接字
-    QTcpSocket *socket;
+    WSADATA wsaData;            // Winsock
+    SOCKET tcpSocket;           // 套接字
+    sockaddr_in serverAddr;     // 存储套接字地址信息
+    const string serverIP;       // 服务器ip
+    int serverPort;             // 服务器端口号
 };
+
+
+
+
+
 
 #endif // CLIENT_H

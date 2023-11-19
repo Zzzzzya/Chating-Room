@@ -1,6 +1,7 @@
 #include "new_friend.h"
 #include "login.h"
 #include "l_friend.h"
+#include "client.h"
 #include "ui_new_friend.h"
 
 New_friend::New_friend(QWidget *parent) :

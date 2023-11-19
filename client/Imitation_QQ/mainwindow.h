@@ -20,6 +20,8 @@ private slots:
 
     void on_btn_register_clicked();
 
+    void on_cbtn_showpwd_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };

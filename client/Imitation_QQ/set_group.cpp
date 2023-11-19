@@ -2,6 +2,7 @@
 #include "login.h"
 #include <QMessageBox>
 #include "ui_set_group.h"
+#include "client.h"
 
 Set_group::Set_group(QWidget *parent) :
     QWidget(parent),
