@@ -18,8 +18,6 @@ set(TS_FILES Imitation_QQ_zh_CN.ts)
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
-        client.cpp
-        client.h
         mainwindow.h
         mainwindow.ui
         ${TS_FILES}
@@ -29,7 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Imitation_QQ
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        client.h client.cpp
+
         login.h login.cpp login.ui
         regis.h regis.cpp regis.ui
         l_friend.h l_friend.cpp l_friend.ui
@@ -37,6 +35,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         add_friend.h add_friend.cpp add_friend.ui
         set_group.h set_group.cpp set_group.ui
         new_friend.h new_friend.cpp new_friend.ui
+        client.h client.cpp
+        MyResources.qrc
 
 
     )

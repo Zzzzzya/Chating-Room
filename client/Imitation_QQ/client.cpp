@@ -1,50 +1,24 @@
 #include "client.h"
+#include <iostream>
 
-Client::Client(QWidget *parent)
-    : QMainWindow{parent}
+void Client:: sendMessage_normal(MsgType type, const string username, const string content, int port)	// 一般消息
 {
-    // 创建QTcpSocket对象
-    socket = new QTcpSocket(this);
+    // 构造要发送的数据
+    string messageData;
+    messageData += to_string(type) + " | ";  		// 第一段：类型
+    messageData += username + " | ";             	// 第二段：用户名
+    messageData += content + "\n";                  // 第三段：具体内容
 
-    // 连接readyRead信号到readMessage槽
-    connect(socket, &QTcpSocket::readyRead, this, &Client::readMessage);
-
-    // 连接connected信号到connected槽
-    connect(socket, &QTcpSocket::connected, this, &Client::connected);
-
-    // 连接disconnected信号到disconnected槽
-    connect(socket, &QTcpSocket::disconnected, this, &Client::disconnected);
-
-    // 连接error信号到匿名槽函数，该槽函数发送errorOccurred信号
-    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(errorOccurred(QAbstractSocket::SocketError)));
+    send(tcpSocket, messageData.c_str(), messageData.size(), 0);
 
 }
 
-Client::~Client()
+void Client::sendMessage_special(MsgType type, const string username, const string password, const string serverIP, int serverPort)	// 登录&注册消息
 {
-    delete socket;
+    std::string messageData;
+    messageData += to_string(type) + " | ";  		// 第一段：类型
+    messageData += username + " | ";  				// 第二段：用户名
+    messageData += password + "\n";        			// 第三段：密码
+
+    send(tcpSocket, messageData.c_str(), messageData.size(), 0);
 }
-
-void Client::connectToServer(const QString &serverAddress, quint16 port)
-{
-
-}
-
-void Client::sendMessage(const QString &message)
-{
-
-}
-
-void Client::disconnectFromServer()
-{
-
-}
-
-void Client::readMessage()
-{
-
-}
-
-
-

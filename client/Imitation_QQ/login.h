@@ -26,6 +26,8 @@ private slots:
 
     void on_btn_apfriend_clicked();
 
+    void on_btn_logout_clicked();
+
 private:
     Ui::login *ui;
 };
