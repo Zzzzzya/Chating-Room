@@ -18,13 +18,13 @@
     <rect>
      <x>0</x>
      <y>260</y>
-     <width>550</width>
+     <width>730</width>
      <height>50</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <widget class="QFontComboBox" name="fontComboBox_2">
+     <widget class="QFontComboBox" name="fontComboBox">
       <property name="maximumSize">
        <size>
         <width>300</width>
@@ -131,7 +131,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="boldBtn_2">
+     <widget class="QToolButton" name="boldBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -157,7 +157,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="slopeBtn_2">
+     <widget class="QToolButton" name="slopeBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -186,7 +186,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="underlineBtn_2">
+     <widget class="QToolButton" name="underlineBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -215,7 +215,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="setColorBtn_2">
+     <widget class="QToolButton" name="setColorBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -241,7 +241,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="preserveBtn_2">
+     <widget class="QToolButton" name="preserveBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -267,7 +267,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="clearBtn_2">
+     <widget class="QToolButton" name="clearBtn">
       <property name="minimumSize">
        <size>
         <width>33</width>
@@ -299,7 +299,7 @@
     <rect>
      <x>0</x>
      <y>310</y>
-     <width>550</width>
+     <width>730</width>
      <height>100</height>
     </rect>
    </property>
@@ -331,7 +331,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="sendBtn_2">
+     <widget class="QPushButton" name="sendBtn">
       <property name="maximumSize">
        <size>
         <width>60</width>
@@ -357,7 +357,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="exitBtn_2">
+     <widget class="QPushButton" name="exitBtn">
       <property name="maximumSize">
        <size>
         <width>60</width>
@@ -394,28 +394,50 @@
     </rect>
    </property>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>20</y>
+     <width>180</width>
+     <height>240</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>成员</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignLeading|AlignVCenter</set>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>在线情况</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignLeading|AlignVCenter</set>
+    </property>
+   </column>
+  </widget>
+  <widget class="QLabel" name="gName">
    <property name="geometry">
     <rect>
      <x>550</x>
      <y>0</y>
      <width>180</width>
-     <height>410</height>
+     <height>20</height>
     </rect>
    </property>
-   <property name="currentIndex">
-    <number>0</number>
+   <property name="frameShape">
+    <enum>QFrame::Panel</enum>
    </property>
-   <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Tab 1</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>Tab 2</string>
-    </attribute>
-   </widget>
+   <property name="text">
+    <string>凌烟阁</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
  </widget>
  <resources>

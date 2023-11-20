@@ -14,6 +14,29 @@ class groupChatting : public QWidget
 public:
     explicit groupChatting(QWidget *parent = nullptr);
     ~groupChatting();
+private:
+    QColor color;
+
+private slots:
+    void on_fontComboBox_currentFontChanged(const QFont &f);
+
+    void on_comboBox_2_currentTextChanged(const QString &arg1);
+
+    void on_boldBtn_clicked(bool checked);
+
+    void on_slopeBtn_clicked(bool checked);
+
+    void on_underlineBtn_clicked(bool checked);
+
+    void on_setColorBtn_clicked();
+
+    void on_preserveBtn_clicked();
+
+    void on_clearBtn_clicked();
+
+    void on_sendBtn_clicked();
+
+    void on_exitBtn_clicked();
 
 private:
     Ui::groupChatting *ui;

@@ -10,7 +10,10 @@
 #include<QDebug>
 #include<QListWidget>
 #include <QScrollArea>
+#include "signalchating.h"
 
+QVector<QToolButton *>vToolBtn;
+QVector<QListWidgetItem *>vQListWidgetItem;
 
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
@@ -25,6 +28,7 @@ friendChat::friendChat(QWidget *parent) :
     showOnlineNumber(on.onlinePersor);
     on.getTotalCnt();
     showOnlineNum(on.totalCnt,on.onlinePersor.size());
+    connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(itemClicked(QListWidgetItem*)));
 }
 
 friendChat::~friendChat()
@@ -90,7 +94,6 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
 {
     for(int i=0;i<onlineperson.size();i++)
     {
-
         QToolButton *btn=new QToolButton;
         btn->setText(onlineperson[i]);
         btn->setIcon(QPixmap(":/picture/11.gif"));
@@ -100,5 +103,34 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
         QListWidgetItem *item =new QListWidgetItem();
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item,btn);
+        vQListWidgetItem.push_back(item);
+        vToolBtn.push_back(btn);
+    }
+}
+
+void friendChat::itemClicked(QListWidgetItem* item)
+{
+    connect(ui->listWidget,&QListWidget::clicked,this,[=]()
+    {
+        signalChating *s=new signalChating();
+        s->show();
+        qDebug()<<"66";
+    });
+    qDebug()<<"666";
+}
+
+void friendChat::showSignalChatting()
+{
+    for(int i=0;i<vToolBtn.size();i++)
+    {
+        connect(ui->listWidget,&QListWidget::clicked,this,[=]()
+        {
+//            qDebug()<<"666";
+//            signalChating *s=new signalChating();
+//            s->setWindowIcon(vToolBtn[i]->icon());
+//            s->setWindowTitle(vToolBtn[i]->text());
+//            s->show();
+            itemClicked(vQListWidgetItem[i]);
+        });
     }
 }
