@@ -18,6 +18,7 @@ SOURCES += \
     groupchatting.cpp \
     login.cpp \
     main.cpp \
+    mysocket.cpp \
     online.cpp \
     register.cpp \
     register_success.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     groupchat.h \
     groupchatting.h \
     login.h \
+    mysocket.h \
     online.h \
     register.h \
     register_success.h \

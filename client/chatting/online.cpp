@@ -27,3 +27,13 @@ void online::getTotalCnt()
 {
     totalCnt=8;
 }
+
+void getAllPerson()
+{
+
+}
+
+void getPassword()
+{
+
+}

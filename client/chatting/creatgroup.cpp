@@ -38,6 +38,7 @@ void creatGroup::on_creatBtn_clicked()
     this->hide();
 }
 
+//显示在线人信息
 void creatGroup::showMessage(QVector<QString> &onlineperson)
 {
     for(int i=0;i<onlineperson.size();i++)
@@ -51,6 +52,7 @@ void creatGroup::showMessage(QVector<QString> &onlineperson)
     }
 }
 
+//显示在线人数
 void creatGroup::showNum(int cnt)
 {
     QString str=QString("%1").arg(cnt);

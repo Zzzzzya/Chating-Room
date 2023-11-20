@@ -14,6 +14,7 @@ groupchat::groupchat(QWidget *parent) :
 {
     ui->setupUi(this);
     setFixedSize(250,410);
+    //获取数有关据库信息
     online on;
     on.getgroupName();
     showOnlineNumber(on.groupName);
@@ -33,7 +34,7 @@ void groupchat::on_friendBtn_clicked()
     this->hide();
 }
 
-//没动
+//没动,不用实现
 void groupchat::on_groupBtn_clicked()
 {
 
@@ -86,9 +87,7 @@ void groupchat::showOnlineNumber(QVector<QString> &group_name)
         QListWidgetItem *item =new QListWidgetItem();
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item,btn);
-
     }
-
 }
 
 

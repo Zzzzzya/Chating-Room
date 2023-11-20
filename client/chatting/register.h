@@ -14,6 +14,7 @@ class Register : public QWidget
 public:
     explicit Register(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent* ev);
+    bool checkNameIsSame(QVector<QString> &allPerson);
     ~Register();
 
 private slots:

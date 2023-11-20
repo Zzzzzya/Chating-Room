@@ -19,7 +19,7 @@ friendChat::friendChat(QWidget *parent) :
     ui->setupUi(this);
 
     setFixedSize(250,410);
-    //先统计在线人数,在定义出在线人数的名字
+    //获取数有关据库信息
     online on;
     on.getOnlinePersor();
     showOnlineNumber(on.onlinePersor);
@@ -40,7 +40,7 @@ void friendChat::paintEvent(QPaintEvent* )
     painter.setPen(pen);
 }
 
-//点击相当于没动
+//点击相当于没动,不用实现
 void friendChat::on_friendBtn_clicked()
 {
 

@@ -14,6 +14,7 @@ class login : public QWidget
 public:
     explicit login(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent* ev);
+    bool checkMessage(QVector<QString> &allPerson,QVector<QString> &password);
     ~login();
 
 private slots:

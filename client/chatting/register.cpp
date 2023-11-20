@@ -2,6 +2,7 @@
 #include "ui_register.h"
 #include<QPainter>
 #include "register_success.h"
+#include"online.h"
 
 Register::Register(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +13,8 @@ Register::Register(QWidget *parent) :
     setWindowTitle("注册");
     ui->name->setText("输入账号");
     ui->password->setText("输入密码");
+    //获取数有关据库信息
+    online on;
 }
 
 void Register::paintEvent(QPaintEvent* ev)
@@ -45,5 +48,10 @@ void Register::on_registerBtn_clicked()
     register_success *rc=new register_success();
     rc->show();
     this->hide();
+}
+
+bool Register::checkNameIsSame(QVector<QString> &allPerson)
+{
+
 }
 

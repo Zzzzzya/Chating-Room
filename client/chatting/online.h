@@ -12,9 +12,13 @@ public:
     void getOnlinePersor();
     void getgroupName();
     void getTotalCnt();
+    void getAllPerson();
+    void getPassword();
     int totalCnt;
+    QVector<QString>allPersor;
     QVector<QString>onlinePersor;
     QVector<QString>groupName;
+    QVector<QString> password;
 };
 
 #endif // ONLINE_H
