@@ -94,14 +94,41 @@
     <string>好友申请</string>
    </property>
   </widget>
-  <widget class="QWidget" name="numberShowBtn" native="true">
+  <widget class="QListWidget" name="listWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>50</y>
      <width>250</width>
-     <height>271</height>
+     <height>270</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>250</width>
+     <height>270</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>250</width>
+     <height>270</height>
+    </size>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOn</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustIgnored</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

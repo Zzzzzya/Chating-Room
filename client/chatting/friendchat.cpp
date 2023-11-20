@@ -8,9 +8,9 @@
 #include "online.h"
 #include<QToolButton>
 #include<QDebug>
-#include<QVBoxLayout>
+#include<QListWidget>
+#include <QScrollArea>
 
-QVector<QToolButton *>vToolBtn; //声明存放QtoolButton的容器 vToolBtn
 
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
@@ -88,23 +88,18 @@ void friendChat::showOnlineNum(int total,int online)
 //显示在线的成员
 void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
 {
-    //
-    QVBoxLayout* box=new QVBoxLayout();
-    ui->widget->setLayout(box);
-    //qDebug()<<onlineperson.size();
     for(int i=0;i<onlineperson.size();i++)
     {
+
         QToolButton *btn=new QToolButton;
-        //名字
+        //btn->setFixedSize(250,40);
         btn->setText(onlineperson[i]);
-        //图片加载
         btn->setIcon(QPixmap(":/picture/11.gif"));
         btn->setIconSize(QSize(30,30));
-        //目前还没定义好
-        btn->setAutoRaise(true);  //设置图片透明效果
         btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
-        box->addWidget(btn);
-        vToolBtn.push_back(btn);
+        //将按钮添加到listWidget中的方法
+        QListWidgetItem *item =new QListWidgetItem();
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item,btn);
     }
-    ui->widget->show();
 }

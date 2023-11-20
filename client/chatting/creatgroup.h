@@ -2,6 +2,7 @@
 #define CREATGROUP_H
 
 #include <QWidget>
+#include<QVector>
 
 namespace Ui {
 class creatGroup;
@@ -13,6 +14,8 @@ class creatGroup : public QWidget
 
 public:
     explicit creatGroup(QWidget *parent = nullptr);
+    void showMessage(QVector<QString> &onlineperson);
+    void showNum(int cnt);
     ~creatGroup();
 
 private slots:

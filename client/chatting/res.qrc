@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>picture/1.jpg</file>
+        <file>picture/11.gif</file>
+        <file>picture/12.jpg</file>
+        <file>picture/13.webp</file>
+        <file>picture/blue.webp</file>
+        <file>picture/clown_moive.gif</file>
+        <file>picture/horse.gif</file>
+        <file>picture/horse_movie.webp</file>
+        <file>picture/kebi.jpg</file>
+        <file>picture/person_movie.gif</file>
+        <file>picture/wx.jpg</file>
+    </qresource>
+</RCC>
