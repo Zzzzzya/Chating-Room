@@ -92,7 +92,6 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
     {
 
         QToolButton *btn=new QToolButton;
-        //btn->setFixedSize(250,40);
         btn->setText(onlineperson[i]);
         btn->setIcon(QPixmap(":/picture/11.gif"));
         btn->setIconSize(QSize(30,30));

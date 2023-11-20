@@ -15,11 +15,13 @@ SOURCES += \
     creatsuc.cpp \
     friendchat.cpp \
     groupchat.cpp \
+    groupchatting.cpp \
     login.cpp \
     main.cpp \
     online.cpp \
     register.cpp \
-    register_success.cpp
+    register_success.cpp \
+    signalchating.cpp
 
 HEADERS += \
     addapply.h \
@@ -28,10 +30,12 @@ HEADERS += \
     creatsuc.h \
     friendchat.h \
     groupchat.h \
+    groupchatting.h \
     login.h \
     online.h \
     register.h \
-    register_success.h
+    register_success.h \
+    signalchating.h
 
 FORMS += \
     addapply.ui \
@@ -40,9 +44,11 @@ FORMS += \
     creatsuc.ui \
     friendchat.ui \
     groupchat.ui \
+    groupchatting.ui \
     login.ui \
     register.ui \
-    register_success.ui
+    register_success.ui \
+    signalchating.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
