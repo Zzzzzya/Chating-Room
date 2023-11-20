@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/MyImage">
-        <file>Image/background.jpg</file>
-        <file>CMakeLists.txt.user</file>
-    </qresource>
-</RCC>
