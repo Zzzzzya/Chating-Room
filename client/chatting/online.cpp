@@ -7,8 +7,8 @@ online::online()
 
 void online::getOnlinePersor()
 {
-    onlinePersor.resize(6);
-    for(int i=0;i<6;i++)
+    onlinePersor.resize(10);
+    for(int i=0;i<onlinePersor.size();i++)
     {
         this->onlinePersor[i]=QString("hao").toUtf8().data();
     }

@@ -7,6 +7,9 @@
 #include "online.h"
 #include<QToolButton>
 #include<QVBoxLayout>
+#include "groupchatting.h"
+
+//QList<QListWidgetItem *>vQListWidgetItem2;
 
 groupchat::groupchat(QWidget *parent) :
     QWidget(parent),
@@ -19,6 +22,7 @@ groupchat::groupchat(QWidget *parent) :
     on.getgroupName();
     showOnlineNumber(on.groupName);
     showOnlineNum(on.groupName.size());
+    showGroupChatting();
 }
 
 groupchat::~groupchat()
@@ -77,17 +81,27 @@ void groupchat::showOnlineNumber(QVector<QString> &group_name)
     for(int i=0;i<group_name.size();i++)
     {
 
-        QToolButton *btn=new QToolButton;
-        //btn->setFixedSize(250,40);
-        btn->setText(group_name[i]);
-        btn->setIcon(QPixmap(":/picture/11.gif"));
-        btn->setIconSize(QSize(30,30));
-        btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
-        //将按钮添加到listWidget中的方法
-        QListWidgetItem *item =new QListWidgetItem();
-        ui->listWidget->addItem(item);
-        ui->listWidget->setItemWidget(item,btn);
+        for(int i=0;i<group_name.size();i++)
+        {
+            ui->listWidget->setIconSize(QSize(30,30));
+            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),group_name[i]);
+            item->setSizeHint(QSize(250,40));
+            ui->listWidget->addItem(item);
+//            vQListWidgetItem2.push_back(item);
+        }
     }
+}
+
+void groupchat::showGroupChatting()
+{
+    connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
+    {
+        QListWidgetItem *selectedItem = ui->listWidget->currentItem();
+        groupChatting *g=new groupChatting();
+        g->setWindowIcon(selectedItem->icon());
+        g->setWindowTitle(selectedItem->text());
+        g->show();
+    });
 }
 
 

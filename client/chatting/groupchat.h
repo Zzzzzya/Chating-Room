@@ -16,6 +16,7 @@ public:
     explicit groupchat(QWidget *parent = nullptr);
     void showOnlineNum(int total);
     void showOnlineNumber(QVector<QString>&group_name);
+    void showGroupChatting();
     ~groupchat();
 
 private slots:

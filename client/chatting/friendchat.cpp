@@ -12,8 +12,7 @@
 #include <QScrollArea>
 #include "signalchating.h"
 
-QVector<QToolButton *>vToolBtn;
-QVector<QListWidgetItem *>vQListWidgetItem;
+//QList<QListWidgetItem *>vQListWidgetItem;
 
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
@@ -28,7 +27,7 @@ friendChat::friendChat(QWidget *parent) :
     showOnlineNumber(on.onlinePersor);
     on.getTotalCnt();
     showOnlineNum(on.totalCnt,on.onlinePersor.size());
-    connect(ui->listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(itemClicked(QListWidgetItem*)));
+    showSignalChatting();
 }
 
 friendChat::~friendChat()
@@ -94,43 +93,28 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
 {
     for(int i=0;i<onlineperson.size();i++)
     {
-        QToolButton *btn=new QToolButton;
-        btn->setText(onlineperson[i]);
-        btn->setIcon(QPixmap(":/picture/11.gif"));
-        btn->setIconSize(QSize(30,30));
-        btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
-        //将按钮添加到listWidget中的方法
-        QListWidgetItem *item =new QListWidgetItem();
+        ui->listWidget->setIconSize(QSize(30,30));
+        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),onlineperson[i]);
+        item->setSizeHint(QSize(250,40));
         ui->listWidget->addItem(item);
-        ui->listWidget->setItemWidget(item,btn);
-        vQListWidgetItem.push_back(item);
-        vToolBtn.push_back(btn);
+//        vQListWidgetItem.push_back(item);
     }
-}
-
-void friendChat::itemClicked(QListWidgetItem* item)
-{
-    connect(ui->listWidget,&QListWidget::clicked,this,[=]()
-    {
-        signalChating *s=new signalChating();
-        s->show();
-        qDebug()<<"66";
-    });
-    qDebug()<<"666";
 }
 
 void friendChat::showSignalChatting()
 {
-    for(int i=0;i<vToolBtn.size();i++)
+    connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
     {
-        connect(ui->listWidget,&QListWidget::clicked,this,[=]()
-        {
-//            qDebug()<<"666";
-//            signalChating *s=new signalChating();
-//            s->setWindowIcon(vToolBtn[i]->icon());
-//            s->setWindowTitle(vToolBtn[i]->text());
-//            s->show();
-            itemClicked(vQListWidgetItem[i]);
-        });
-    }
+        QListWidgetItem *selectedItem = ui->listWidget->currentItem();
+        signalChating *s=new signalChating();
+        s->setWindowIcon(selectedItem->icon());
+        s->setWindowTitle(selectedItem->text());
+        s->show();
+    });
 }
+
+//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().width(), 250));
+//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().height(), 40));
+//QRect ret=ui->listWidget->visualItemRect(vQListWidgetItem[i]);
+//QString str=QString("x = %1 y = %2 width = %3 height = %4").arg(ret.x()).arg(ret.y()).arg(width()).arg(height());
+//qDebug()<<str;

@@ -367,12 +367,10 @@
       <property name="toolTip">
        <string>清空聊天记录</string>
       </property>
-      <property name="text">
-       <string>...</string>
-      </property>
       <property name="icon">
-       <iconset resource="res.qrc">
-        <normaloff>:/picture/clear.jpg</normaloff>:/picture/clear.jpg</iconset>
+       <iconset>
+        <normalon>:/picture/clear.jpg</normalon>
+       </iconset>
       </property>
       <property name="iconSize">
        <size>

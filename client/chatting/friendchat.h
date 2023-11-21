@@ -32,8 +32,6 @@ private slots:
 
     void on_applyBtn_clicked();
 
-    void itemClicked(QListWidgetItem* item);
-
 
 
 private:
