@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     addapply.cpp \
     addfrient.cpp \
+    craetgroupname.cpp \
     creatgroup.cpp \
     creatsuc.cpp \
     friendchat.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     addapply.h \
     addfrient.h \
+    craetgroupname.h \
     creatgroup.h \
     creatsuc.h \
     friendchat.h \
@@ -42,6 +44,7 @@ HEADERS += \
 FORMS += \
     addapply.ui \
     addfrient.ui \
+    craetgroupname.ui \
     creatgroup.ui \
     creatsuc.ui \
     friendchat.ui \

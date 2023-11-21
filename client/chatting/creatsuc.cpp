@@ -7,6 +7,7 @@ creatSuc::creatSuc(QWidget *parent) :
     ui(new Ui::creatSuc)
 {
     ui->setupUi(this);
+    setWindowTitle("建群成功");
 }
 
 creatSuc::~creatSuc()

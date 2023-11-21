@@ -16,6 +16,7 @@ groupchat::groupchat(QWidget *parent) :
     ui(new Ui::groupchat)
 {
     ui->setupUi(this);
+    setWindowTitle("群聊");
     setFixedSize(250,410);
     //获取数有关据库信息
     online on;

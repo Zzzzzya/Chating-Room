@@ -78,7 +78,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>建立群聊</string>
+    <string>创建群聊</string>
    </property>
   </widget>
   <widget class="QPushButton" name="applyBtn">
@@ -123,6 +123,9 @@
    </property>
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOn</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
    <property name="sizeAdjustPolicy">
     <enum>QAbstractScrollArea::AdjustIgnored</enum>

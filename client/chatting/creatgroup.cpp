@@ -3,6 +3,7 @@
 #include "groupchat.h"
 #include"online.h"
 #include<QCheckBox>
+#include "craetgroupname.h"
 
 creatGroup::creatGroup(QWidget *parent) :
     QWidget(parent),
@@ -33,8 +34,8 @@ void creatGroup::on_backBtn_clicked()
 //跳转到creatsuc界面&&将信息存到数据库
 void creatGroup::on_creatBtn_clicked()
 {
-    groupchat *g=new groupchat();
-    g->show();
+    craetGroupName *c=new craetGroupName();
+    c->show();
     this->hide();
 }
 

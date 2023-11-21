@@ -19,7 +19,7 @@ friendChat::friendChat(QWidget *parent) :
     ui(new Ui::friendChat)
 {
     ui->setupUi(this);
-
+    setWindowTitle("好友");
     setFixedSize(250,410);
     //获取数有关据库信息
     online on;
