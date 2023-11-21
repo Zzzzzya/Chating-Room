@@ -87,8 +87,8 @@ void groupChatting::on_sendBtn_clicked()
 
 void groupChatting::on_exitBtn_clicked()
 {
-    groupchat *g=new groupchat();
-    g->show();
+//    groupchat *g=new groupchat();
+//    g->show();
     this->hide();
 }
 
