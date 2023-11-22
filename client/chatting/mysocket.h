@@ -5,7 +5,13 @@
 #include <QString>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-
+#include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
+#include <QDateTime>
+#include <QList>
 
 class MySocket : public QObject
 {
@@ -99,9 +105,13 @@ signals:
 
     // 好友列表已接收到的信号
     void friendListReceived();
+    // 发送信号通知 UI 更新好友列表
+    void friendListUpdated(QJsonArray friendList);
 
     // 群组列表已接收到的信号
     void groupListReceived();
+    // 发送信号通知 UI 更新群聊列表
+    void groupListUpdated(QJsonArray friendList);
 
     // 发送群聊消息响应函数
     void groupMessage_Response();

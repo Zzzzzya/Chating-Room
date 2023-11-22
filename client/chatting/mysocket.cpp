@@ -1,11 +1,5 @@
 #include "mysocket.h"
-#include <QDebug>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
-#include <QDateTime>
-#include <QList>
+
 
 MySocket::MySocket(QObject *parent) : QObject(parent)
 {
@@ -230,12 +224,7 @@ void MySocket::getFriendListResponse()
 
     if (success == true)
     {
-        QList<QString> friendNames;
-
-        for (const QJsonValue& friendValue : message) {
-            QString friendName = friendValue.toString();
-            friendNames.append(friendName);
-        }
+        emit friendListUpdated(message); // 将传回的好友列表作为参数传递
     }
     else
     {
@@ -439,14 +428,8 @@ void MySocket::getGroupListResponse()
     QJsonArray message = jsonObject["message"].toArray();
 
     if (success == true) {
-        QList<QString> groupNames;
 
-        for (const QJsonValue& group : message) {
-            QString groupName = group.toString();
-            groupNames.append(groupName);
-        }
-
-        emit groupListReceived();
+        emit groupListUpdated(message);
     }else{
         qDebug() << "获取群组列表失败!";
     }
