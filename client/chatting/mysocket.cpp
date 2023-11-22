@@ -5,6 +5,8 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QDateTime>
+#include <QList>
+
 MySocket::MySocket(QObject *parent) : QObject(parent)
 {
     WSADATA data;           // 网络环境初始化
@@ -12,18 +14,36 @@ MySocket::MySocket(QObject *parent) : QObject(parent)
     if (ret != 0) {
         qDebug() << "初始化网络错误！";
         return;
+    }else{
+        qDebug() << "初始化网络成功！";
     }
 
     ret = socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if (ret == -1) {
         qDebug() << "创建套接字失败！";
+        return;
     }
+
+    // 连接信号和槽
+    connect(this, &MySocket::registration_Response, this, &MySocket::registerResponse);
+    connect(this, &MySocket::login_Response, this, &MySocket::loginResponse);
+    connect(this, &MySocket::addFriend_Response, this, &MySocket::addFriendResponse);
+    connect(this, &MySocket::deleteFriend_Response, this, &MySocket::deleteFriendResponse);
+    connect(this, &MySocket::friendRequest_Response, this, &MySocket::friendRequestResponse);
+    connect(this, &MySocket::friendMessage_Response, this, &MySocket::friendMessageResponse);
+    connect(this, &MySocket::groupCreate_Response, this, &MySocket::groupCreateReponse);
+    connect(this, &MySocket::joinGroup_Response, this, &MySocket::joinGroupReponse);
+    connect(this, &MySocket::leaveGroup_Response, this, &MySocket::leaveGroupReponse);
+    connect(this, &MySocket::friendListReceived, this, &MySocket::getFriendListResponse);
+    connect(this, &MySocket::groupListReceived, this, &MySocket::getGroupListResponse);
+    connect(this, &MySocket::groupMessage_Response, this, &MySocket::groupMessageResponse);
 
 }
 
 MySocket::~MySocket()           // 析构，释放资源
 {
     disconnectFromServer();
+    disconnect();               // 断开对象的所有连接
     // 清理网络环境：
     WSACleanup();
 }
@@ -46,12 +66,39 @@ bool MySocket::sendMessagetoServer(const QByteArray& message)
     return true;
 }
 
-bool MySocket::connectToServer(const char *serverAddress, int port)
+QJsonObject &MySocket::receiveMessageFromServer()
+{
+    buffer.clear(); // 清空缓存区
+    int ret = recv(socketfd, buffer.data(), buffer.size(), 0);
+    if (ret == SOCKET_ERROR) {
+            int error = WSAGetLastError();
+            qDebug() << "接收失败: " << error;
+
+            // 返回一个空的QJsonObject对象
+            static QJsonObject emptyObject;
+            return emptyObject;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(buffer);
+    if (doc.isNull()) {
+            qDebug() << "解析JSON失败";
+
+            // 返回一个空的QJsonObject对象
+            static QJsonObject emptyObject;
+            return emptyObject;
+    }
+
+    // 返回解析得到的JSON对象
+    static QJsonObject jsonObject = doc.object();
+    return jsonObject;
+}
+
+bool MySocket::connectToServer()
 {
     sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
-    serv_addr.sin_addr.S_un.S_addr = inet_addr(serverAddress);
+    serv_addr.sin_port = htons(8000);
+    serv_addr.sin_addr.S_un.S_addr = inet_addr("111.229.188.220");
     if (serv_addr.sin_addr.S_un.S_addr == INADDR_NONE) {
         qDebug() << "无效的IP地址";
         return false;
@@ -94,10 +141,14 @@ void MySocket::registerUser(const QString &username, const QString &password)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit registration_Response();
 }
 
-void MySocket::registerResponse(const QJsonObject &jsonObject)
+void MySocket::registerResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["register"].toString();
     bool success = jsonObject["success"].toBool();
@@ -108,7 +159,6 @@ void MySocket::registerResponse(const QJsonObject &jsonObject)
         qDebug() << "注册请求无效！";
     }
 
-    emit registrationResponse(success);
 }
 
 void MySocket::loginIn(const QString &username, const QString &password)
@@ -129,10 +179,14 @@ void MySocket::loginIn(const QString &username, const QString &password)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit login_Response();
 }
 
-void MySocket::loginResponse(const QJsonObject &jsonObject)
+void MySocket::loginResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["login"].toString();
     bool success = jsonObject["success"].toBool();
@@ -143,7 +197,6 @@ void MySocket::loginResponse(const QJsonObject &jsonObject)
         qDebug() << "登录请求无效！";
     }
 
-    emit loginInResponse(success);
 }
 
 void MySocket::requestFriendList(const QString &username)
@@ -162,10 +215,14 @@ void MySocket::requestFriendList(const QString &username)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit friendListReceived();
 }
 
-void MySocket::getFriendListResponse(const QJsonObject &jsonObject)
+void MySocket::getFriendListResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -179,9 +236,6 @@ void MySocket::getFriendListResponse(const QJsonObject &jsonObject)
             QString friendName = friendValue.toString();
             friendNames.append(friendName);
         }
-
-        // 发射信号，将好友列表信息传递给 UI
-        emit friendListReceived(friendNames);
     }
     else
     {
@@ -206,10 +260,14 @@ void MySocket::addFriend(const QString& username, const QString &friendUsername)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit addFriend_Response();
 }
 
-void MySocket::addFriendResponse(const QJsonObject &jsonObject)
+void MySocket::addFriendResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -226,8 +284,6 @@ void MySocket::addFriendResponse(const QJsonObject &jsonObject)
         qDebug() << "添加好友失败! ";
     }
 
-    // 发射添加好友响应信号，将添加结果传递给 UI
-    emit addFriendResponse(success);
 }
 
 void MySocket::deleteFriend(const QString &username, const QString &friendUsername)
@@ -247,10 +303,14 @@ void MySocket::deleteFriend(const QString &username, const QString &friendUserna
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit deleteFriend_Response();
 }
 
-void MySocket::deleteFriendResponse(const QJsonObject &jsonObject)
+void MySocket::deleteFriendResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -267,17 +327,13 @@ void MySocket::deleteFriendResponse(const QJsonObject &jsonObject)
         qDebug() << "删除好友失败! ";
     }
 
-    // 发射删除好友响应信号，将添加结果传递给 UI
-    emit deleteFriendResponse(success);
 }
 
-void MySocket::sendFriendRequest(const QString &username, const QString &friendUsername, const QString &message)
+void MySocket::sendFriendRequest(const QString &friend_account)
 {
     // content的内容
     QJsonObject sendfriendContent;
-    sendfriendContent["username"] = username;
-    sendfriendContent["friend_username"] = friendUsername;
-    sendfriendContent["data"] = message;
+    sendfriendContent["friend_account"] = friend_account;
     sendfriendContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
     QJsonObject messageObject;
@@ -289,10 +345,14 @@ void MySocket::sendFriendRequest(const QString &username, const QString &friendU
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit friendRequest_Response();
 }
 
-void MySocket::friendRequestResponse(const QJsonObject &jsonObject)
+void MySocket::friendRequestResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -306,8 +366,6 @@ void MySocket::friendRequestResponse(const QJsonObject &jsonObject)
         qDebug() << "申请好友失败! ";
     }
 
-    // 发射请求好友响应信号
-    emit friendRequestResponse(success);
 }
 
 void MySocket::sendFriendMessage(const QString &username, const QString &friendUsername, const QString &content)
@@ -328,10 +386,14 @@ void MySocket::sendFriendMessage(const QString &username, const QString &friendU
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit friendMessage_Response();
 }
 
-void MySocket::FriendMessageResponse(const QJsonObject &jsonObject)
+void MySocket::friendMessageResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -345,8 +407,6 @@ void MySocket::FriendMessageResponse(const QJsonObject &jsonObject)
         qDebug() << "消息发送失败! ";
     }
 
-    // 发射好友消息响应信号
-    emit friendMessageResponse(success);
 }
 
 void MySocket::requestGroupList(const QString &username)
@@ -365,10 +425,14 @@ void MySocket::requestGroupList(const QString &username)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit groupListReceived();
 }
 
-void MySocket::getGroupListResponse(const QJsonObject &jsonObject)
+void MySocket::getGroupListResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -382,10 +446,9 @@ void MySocket::getGroupListResponse(const QJsonObject &jsonObject)
             groupNames.append(groupName);
         }
 
-        emit groupListReceived(groupNames);
+        emit groupListReceived();
     }else{
         qDebug() << "获取群组列表失败!";
-
     }
 
 }
@@ -408,10 +471,14 @@ void MySocket::createGroup(const QString &username, const QString &groupName, co
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit groupCreate_Response();
 }
 
-void MySocket::groupCreateReponse(const QJsonObject &jsonObject)
+void MySocket::groupCreateReponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -428,8 +495,6 @@ void MySocket::groupCreateReponse(const QJsonObject &jsonObject)
         qDebug() << "创建群聊失败! ";
     }
 
-    // 发射创建群聊响应信号
-    emit groupCreateReponse(success);
 }
 
 void MySocket::joinGroup(const QString &groupId, const QString &username)
@@ -449,10 +514,14 @@ void MySocket::joinGroup(const QString &groupId, const QString &username)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit joinGroup_Response();
 }
 
-void MySocket::joinGroupReponse(const QJsonObject &jsonObject)
+void MySocket::joinGroupReponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -469,8 +538,6 @@ void MySocket::joinGroupReponse(const QJsonObject &jsonObject)
         qDebug() << "加入群聊失败! ";
     }
 
-    // 发射加入群聊响应信号
-    emit joinGroupReponse(success);
 }
 
 void MySocket::leaveGroup(const QString &groupId, const QString &username)
@@ -490,10 +557,14 @@ void MySocket::leaveGroup(const QString &groupId, const QString &username)
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit leaveGroup_Response();
 }
 
-void MySocket::leaveGroupReponse(const QJsonObject &jsonObject)
+void MySocket::leaveGroupReponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -510,8 +581,6 @@ void MySocket::leaveGroupReponse(const QJsonObject &jsonObject)
         qDebug() << "退出群聊失败! ";
     }
 
-    // 发射退出群聊响应信号
-    emit leaveGroupReponse(success);
 }
 
 void MySocket::sendGroupMessage(const QString &groupId, const QString &sender, const QString &content)
@@ -532,10 +601,14 @@ void MySocket::sendGroupMessage(const QString &groupId, const QString &sender, c
 
     // 发送消息到服务器
     sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit groupMessage_Response();
 }
 
-void MySocket::groupMessageResponse(const QJsonObject &jsonObject)
+void MySocket::groupMessageResponse()
 {
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
@@ -549,11 +622,5 @@ void MySocket::groupMessageResponse(const QJsonObject &jsonObject)
         qDebug() << "消息发送失败! ";
     }
 
-    // 发射好友消息响应信号
-    emit groupMessageResponse(success);
 }
-
-
-
-
 

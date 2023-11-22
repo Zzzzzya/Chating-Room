@@ -2,12 +2,10 @@
 #define MYSOCKET_H
 
 #include <QObject>
-#include <Qstring>
+#include <QString>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <QList>
-#include <QPair>
-using namespace std;
+
 
 class MySocket : public QObject
 {
@@ -18,102 +16,103 @@ public:
     explicit MySocket(QObject *parent = nullptr);
     ~MySocket();
 
-    bool connectToServer(const char* serverAddress, int port);
+    bool connectToServer();
     void disconnectFromServer();
 
-private slots:
+public slots:
 
     // 注册
     void registerUser(const QString& username, const QString& password);
-    void registerResponse(const QJsonObject &jsonObject);
+    void registerResponse();
 
     // 登录
     void loginIn(const QString& username, const QString& password);
-    void loginResponse(const QJsonObject &jsonObject);
+    void loginResponse();
 
     // 请求好友列表
     void requestFriendList(const QString& username);
-    void getFriendListResponse(const QJsonObject &jsonObject);
+    void getFriendListResponse();
 
     // 添加好友
     void addFriend(const QString& username, const QString& friendUsername);
-    void addFriendResponse(const QJsonObject &jsonObject);
+    void addFriendResponse();
 
     // 删除好友
     void deleteFriend(const QString& username, const QString& friendUsername);
-    void deleteFriendResponse(const QJsonObject &jsonObject);
+    void deleteFriendResponse();
 
     // 发送好友申请
-    void sendFriendRequest(const QString& username, const QString& friendUsername, const QString& message);
-    void friendRequestResponse(const QJsonObject &jsonObject);
+    void sendFriendRequest(const QString& friend_account);
+    void friendRequestResponse();
 
     // 发送好友消息
     void sendFriendMessage(const QString &username, const QString& friendUsername, const QString& content);
-    void FriendMessageResponse(const QJsonObject &jsonObject);
+    void friendMessageResponse();
 
     // 请求群组列表
     void requestGroupList(const QString& username);
-    void getGroupListResponse(const QJsonObject &jsonObject);
+    void getGroupListResponse();
 
     // 创建群组
     void createGroup(const QString &username, const QString& groupName, const QStringList& members);
-    void groupCreateReponse(const QJsonObject &jsonObject);
+    void groupCreateReponse();
 
     // 加入群组
     void joinGroup(const QString& groupId, const QString& username);
-    void joinGroupReponse(const QJsonObject &jsonObject);
+    void joinGroupReponse();
 
     // 退出群组
     void leaveGroup(const QString& groupId, const QString& username);
-    void leaveGroupReponse(const QJsonObject &jsonObject);
+    void leaveGroupReponse();
 
     // 发送群组消息
     void sendGroupMessage(const QString& groupId, const QString& sender, const QString& content);
-    void groupMessageResponse(const QJsonObject &jsonObject);
+    void groupMessageResponse();
 
 signals:
     // 注册响应信号
-    void registrationResponse(bool success);
+    void registration_Response();
 
     // 登录响应信号
-    void loginInResponse(bool success);
+    void login_Response();
 
     // 添加好友响应信号
-    void addFriendResponse(bool success);
+    void addFriend_Response();
 
     // 删除好友响应信号
-    void deleteFriendResponse(bool success);
+    void deleteFriend_Response();
 
     // 发送好友申请响应函数
-    void friendRequestResponse(bool success);
+    void friendRequest_Response();
 
     // 发送好友消息响应函数
-    void friendMessageResponse(bool success);
+    void friendMessage_Response();
 
     // 创建群聊响应函数
-    void groupCreateReponse(bool success);
+    void groupCreate_Response();
 
     // 加入群聊响应函数
-    void joinGroupReponse(bool success);
+    void joinGroup_Response();
 
     // 退出群聊响应函数
-    void leaveGroupReponse(bool success);
+    void leaveGroup_Response();
 
     // 好友列表已接收到的信号
-    void friendListReceived(const QList<QString>& friendNames);
+    void friendListReceived();
 
     // 群组列表已接收到的信号
-    void groupListReceived(const QList<QString>& groupNames);
+    void groupListReceived();
 
     // 发送群聊消息响应函数
-    void groupMessageResponse(bool success);
+    void groupMessage_Response();
 
 private:
     SOCKET socketfd;
     QString m_username;
+    QByteArray buffer;  // 缓存
 
     bool sendMessagetoServer(const QByteArray &message);
-
+    QJsonObject& receiveMessageFromServer();
 };
 
 #endif // MYSOCKET_H
