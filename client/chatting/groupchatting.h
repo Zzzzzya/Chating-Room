@@ -13,6 +13,8 @@ class groupChatting : public QWidget
 
 public:
     explicit groupChatting(QWidget *parent = nullptr);
+    void setTableWidget(QVector<QString>&groupPerson,QVector<int>&groupPersonIsOnline);
+    QString GName;
     ~groupChatting();
 private:
     QColor color;

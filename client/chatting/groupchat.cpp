@@ -5,11 +5,8 @@
 #include "creatgroup.h"
 #include "addapply.h"
 #include "online.h"
-#include<QToolButton>
-#include<QVBoxLayout>
 #include "groupchatting.h"
 
-//QList<QListWidgetItem *>vQListWidgetItem2;
 
 groupchat::groupchat(QWidget *parent) :
     QWidget(parent),
@@ -81,15 +78,10 @@ void groupchat::showOnlineNumber(QVector<QString> &group_name)
 {
     for(int i=0;i<group_name.size();i++)
     {
-
-        for(int i=0;i<group_name.size();i++)
-        {
-            ui->listWidget->setIconSize(QSize(30,30));
-            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),group_name[i]);
-            item->setSizeHint(QSize(250,40));
-            ui->listWidget->addItem(item);
-//            vQListWidgetItem2.push_back(item);
-        }
+        ui->listWidget->setIconSize(QSize(30,30));
+        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),group_name[i]);
+        item->setSizeHint(QSize(250,40));
+        ui->listWidget->addItem(item);
     }
 }
 

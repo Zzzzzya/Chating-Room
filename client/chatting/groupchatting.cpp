@@ -1,13 +1,17 @@
 #include "groupchatting.h"
 #include "ui_groupchatting.h"
 #include<QColorDialog>
-#include "groupchat.h"
+#include"online.h"
 
 groupChatting::groupChatting(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::groupChatting)
 {
     ui->setupUi(this);
+    online on;
+    on.getgroupPerson();
+    on.getGroupPersonIsOnline();
+    setTableWidget(on.groupPerson,on.groupPersonIsOnline);
 }
 
 groupChatting::~groupChatting()
@@ -84,11 +88,37 @@ void groupChatting::on_sendBtn_clicked()
 
 }
 
-
 void groupChatting::on_exitBtn_clicked()
 {
-//    groupchat *g=new groupchat();
-//    g->show();
     this->hide();
+}
+
+void groupChatting::setTableWidget(QVector<QString>&groupPerson,QVector<int>&groupPersonIsOnline)
+{
+    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"成员"<<"在线情况");
+    ui->tableWidget->setRowCount(groupPerson.size());
+    for(int i=0;i<groupPerson.size();i++)
+    {
+        for(int j=0;j<2;j++)
+        {
+            if(j==0)
+            {
+                ui->tableWidget->setItem(i,j,new QTableWidgetItem(groupPerson[i]));
+            }
+            if(j==1)
+            {
+                if(groupPersonIsOnline[i]==0)
+                {
+                    ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
+                }
+                else
+                {
+                    ui->tableWidget->setItem(i,j,new QTableWidgetItem("在线"));
+                }
+            }
+        }
+    }
+    ui->tableWidget->show();
 }
 

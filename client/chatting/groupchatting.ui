@@ -404,22 +404,9 @@
      <height>240</height>
     </rect>
    </property>
-   <column>
-    <property name="text">
-     <string>成员</string>
-    </property>
-    <property name="textAlignment">
-     <set>AlignLeading|AlignVCenter</set>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>在线情况</string>
-    </property>
-    <property name="textAlignment">
-     <set>AlignLeading|AlignVCenter</set>
-    </property>
-   </column>
+   <property name="showGrid">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="gName">
    <property name="geometry">
