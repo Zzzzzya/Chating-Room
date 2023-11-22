@@ -22,6 +22,9 @@ private slots:
 
     void on_confirmBtn_clicked();
 
+signals:
+    void confirmButtonClicked(const QString &friend_account);
+
 private:
     Ui::addfrient *ui;
 };
