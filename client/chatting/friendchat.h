@@ -22,6 +22,8 @@ public:
 public slots:
     void updateFriendList(const QString& friendName);
 
+    void showSignalChatting();
+
 private slots:
     void on_friendBtn_clicked();
 
