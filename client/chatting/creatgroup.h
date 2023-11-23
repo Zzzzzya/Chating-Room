@@ -19,7 +19,7 @@ public:
     void showNum(int cnt);
     void clickedName(int cnt);
     QVector<QString>choosedName;
-    QSet<QListWidgetItem*>selectedItem;
+    QVector<QListWidgetItem*>selectedItem;
     ~creatGroup();
 
 private slots:
