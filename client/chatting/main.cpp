@@ -1,12 +1,23 @@
 #include "login.h"
-
+#include "mysocket.h"
 #include <QApplication>
 
+MySocket *mysocket;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    mysocket = new MySocket(nullptr);
+    mysocket->connectToServer();
+
+
     login *l=new login();
     l->show();
 
-    return a.exec();
+    int result = a.exec();
+
+    // 在应用程序退出前,释放资源和关闭网络连接
+    delete mysocket;
+
+    return result;
 }
