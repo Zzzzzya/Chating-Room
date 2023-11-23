@@ -64,17 +64,19 @@ public slots:
     void groupCreateReponse();
 
     // 加入群组
-    void joinGroup(const QString& groupId, const QString& username);
+    void joinGroup(const QString& groupname, const QString& username);
     void joinGroupReponse();
 
     // 退出群组
-    void leaveGroup(const QString& groupId, const QString& username);
+    void leaveGroup(const QString& groupname, const QString& username);
     void leaveGroupReponse();
 
     // 发送群组消息
-    void sendGroupMessage(const QString& groupId, const QString& sender, const QString& content);
+    void sendGroupMessage(const QString& groupname, const QString& sender, const QString& content);
     void groupMessageResponse();
 
+    // 读取发来的消息
+    void processServerMessage(const QJsonObject& message);
 signals:
     // 注册响应信号
     void registration_Response();
@@ -116,6 +118,9 @@ signals:
     // 发送群聊消息响应函数
     void groupMessage_Response();
 
+    // 读取到服务器发送的聊天消息
+    void chatMessageReceived(const QString& message);
+    void groupMessageReceived(const QString& message);
 private:
     SOCKET socketfd;
     QString m_username;

@@ -71,6 +71,8 @@ QJsonObject &MySocket::receiveMessageFromServer()
             // 返回一个空的QJsonObject对象
             static QJsonObject emptyObject;
             return emptyObject;
+    }else{
+            qDebug() << "接收成功!";
     }
 
     QJsonDocument doc = QJsonDocument::fromJson(buffer);
@@ -121,6 +123,7 @@ void MySocket::disconnectFromServer()
 void MySocket::registerUser(const QString &username, const QString &password)
 {
     // content的内容
+    this->m_username = username;
     QJsonObject registerContent;
     registerContent["username"] = username;
     registerContent["password"] = password;
@@ -198,7 +201,6 @@ void MySocket::requestFriendList(const QString &username)
     // content的内容
     QJsonObject friendListContent;
     friendListContent["username"] = username;
-    friendListContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -232,13 +234,13 @@ void MySocket::getFriendListResponse()
     }
 }
 
+// 添加好友而非申请好友
 void MySocket::addFriend(const QString& username, const QString &friendUsername)
 {
     // content的内容
     QJsonObject friendContent;
     friendContent["username"] = username;
     friendContent["friend_username"] = friendUsername;
-    friendContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -280,8 +282,7 @@ void MySocket::deleteFriend(const QString &username, const QString &friendUserna
     // content的内容
     QJsonObject delfriendContent;
     delfriendContent["username"] = username;
-    delfriendContent["friend_username"] = friendUsername;
-    delfriendContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
+    delfriendContent["friend_username"] = friendUsername;    
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -323,7 +324,6 @@ void MySocket::sendFriendRequest(const QString &friend_account)
     // content的内容
     QJsonObject sendfriendContent;
     sendfriendContent["friend_account"] = friend_account;
-    sendfriendContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -403,7 +403,6 @@ void MySocket::requestGroupList(const QString &username)
     // content的内容
     QJsonObject GroupListContent;
     GroupListContent["username"] = username;
-    GroupListContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -480,13 +479,12 @@ void MySocket::groupCreateReponse()
 
 }
 
-void MySocket::joinGroup(const QString &groupId, const QString &username)
+void MySocket::joinGroup(const QString &groupname, const QString &username)
 {
     // content的内容
     QJsonObject GroupjoinContent;
     GroupjoinContent["username"] = username;
-    GroupjoinContent["groupId"] = groupId;
-    GroupjoinContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
+    GroupjoinContent["groupname"] = groupname;
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -523,13 +521,12 @@ void MySocket::joinGroupReponse()
 
 }
 
-void MySocket::leaveGroup(const QString &groupId, const QString &username)
+void MySocket::leaveGroup(const QString &groupname, const QString &username)
 {
     // content的内容
     QJsonObject GroupleaveContent;
     GroupleaveContent["username"] = username;
-    GroupleaveContent["groupId"] = groupId;
-    GroupleaveContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
+    GroupleaveContent["groupname"] = groupname;
 
     QJsonObject messageObject;
     messageObject["type"] = "request";
@@ -566,12 +563,12 @@ void MySocket::leaveGroupReponse()
 
 }
 
-void MySocket::sendGroupMessage(const QString &groupId, const QString &sender, const QString &content)
+void MySocket::sendGroupMessage(const QString &groupname, const QString &sender, const QString &content)
 {
     // content的内容
     QJsonObject messageContent;
     messageContent["sender"] = sender;
-    messageContent["groupId"] = groupId;
+    messageContent["groupname"] = groupname;
     messageContent["data"] = content;
     messageContent["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"); // 获取当前时间
 
@@ -605,5 +602,25 @@ void MySocket::groupMessageResponse()
         qDebug() << "消息发送失败! ";
     }
 
+}
+
+void MySocket::processServerMessage(const QJsonObject &message)
+{
+    QString type = message["type"].toString();
+    QString subtype = message["subtype"].toString();
+
+    if (type == "message" && subtype == "text") {
+        QJsonObject content = message["content"].toObject();
+        QString data = content["data"].toString();
+
+        // 发送信号通知界面显示消息
+        emit chatMessageReceived(data);
+    }
+    if(type == "message" && subtype == "group_message"){
+        QJsonObject content = message["content"].toObject();
+        QString data = content["data"].toString();
+
+        emit groupMessageReceived(data);
+    }
 }
 
