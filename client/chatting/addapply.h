@@ -25,6 +25,7 @@ private slots:
 
 private:
     Ui::addApply *ui;
+    QString new_name;
 };
 
 #endif // ADDAPPLY_H

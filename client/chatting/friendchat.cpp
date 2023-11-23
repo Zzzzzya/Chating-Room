@@ -30,6 +30,18 @@ friendChat::friendChat(QWidget *parent) :
     showSignalChatting();
 }
 
+void friendChat::updateFriendList(const QString &friendName)
+{
+    ui->listWidget->setIconSize(QSize(30,30));
+    QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),friendName);
+    item->setSizeHint(QSize(250,40));
+    ui->listWidget->addItem(item);
+
+
+    // 添加后应当更新onlineperson的大小
+
+}
+
 friendChat::~friendChat()
 {
     delete ui;

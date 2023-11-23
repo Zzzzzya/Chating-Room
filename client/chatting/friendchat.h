@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include<QVector>
-#include<QListWidgetItem>
 
 namespace Ui {
 class friendChat;
@@ -18,8 +17,12 @@ public:
     void paintEvent(QPaintEvent* ev);
     void showOnlineNum(int total,int online);
     void showOnlineNumber(QVector<QString> &onlineperson);
-    void showSignalChatting();
     ~friendChat();
+
+public slots:
+    void updateFriendList(const QString& friendName);
+
+    void showSignalChatting();
 
 private slots:
     void on_friendBtn_clicked();
@@ -31,8 +34,6 @@ private slots:
     void on_creatGroupBtn_clicked();
 
     void on_applyBtn_clicked();
-
-
 
 private:
     Ui::friendChat *ui;
