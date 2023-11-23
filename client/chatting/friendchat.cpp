@@ -1,4 +1,5 @@
 #include "friendchat.h"
+#include "qjsonarray.h"
 #include "ui_friendchat.h"
 #include<QPainter>
 #include "groupchat.h"
@@ -10,16 +11,15 @@
 #include<QDebug>
 #include<QListWidget>
 #include <QScrollArea>
-#include "signalchating.h"
 
-//QList<QListWidgetItem *>vQListWidgetItem;
+
 
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::friendChat)
 {
     ui->setupUi(this);
-    setWindowTitle("好友");
+
     setFixedSize(250,410);
     //获取数有关据库信息
     online on;
@@ -27,12 +27,27 @@ friendChat::friendChat(QWidget *parent) :
     showOnlineNumber(on.onlinePersor);
     on.getTotalCnt();
     showOnlineNum(on.totalCnt,on.onlinePersor.size());
-    showSignalChatting();
 }
 
 friendChat::~friendChat()
 {
     delete ui;
+}
+
+void friendChat::updateFriendList(const QString &friendName)
+{
+    QToolButton *btn=new QToolButton;
+    btn->setText(friendName);
+    btn->setIcon(QPixmap(":/picture/11.gif"));
+    btn->setIconSize(QSize(30,30));
+    btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
+    //将按钮添加到listWidget中的方法
+    QListWidgetItem *item =new QListWidgetItem();
+    ui->listWidget->addItem(item);
+    ui->listWidget->setItemWidget(item,btn);
+
+    // 添加后应当更新onlineperson的大小
+
 }
 
 void friendChat::paintEvent(QPaintEvent* )
@@ -93,28 +108,15 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
 {
     for(int i=0;i<onlineperson.size();i++)
     {
-        ui->listWidget->setIconSize(QSize(30,30));
-        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),onlineperson[i]);
-        item->setSizeHint(QSize(250,40));
+
+        QToolButton *btn=new QToolButton;
+        btn->setText(onlineperson[i]);
+        btn->setIcon(QPixmap(":/picture/11.gif"));
+        btn->setIconSize(QSize(30,30));
+        btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);//设置按钮风格，同时显示文字和图标
+        //将按钮添加到listWidget中的方法
+        QListWidgetItem *item =new QListWidgetItem();
         ui->listWidget->addItem(item);
-//        vQListWidgetItem.push_back(item);
+        ui->listWidget->setItemWidget(item,btn);
     }
 }
-
-void friendChat::showSignalChatting()
-{
-    connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
-    {
-        QListWidgetItem *selectedItem = ui->listWidget->currentItem();
-        signalChating *s=new signalChating();
-        s->setWindowIcon(selectedItem->icon());
-        s->setWindowTitle(selectedItem->text());
-        s->show();
-    });
-}
-
-//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().width(), 250));
-//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().height(), 40));
-//QRect ret=ui->listWidget->visualItemRect(vQListWidgetItem[i]);
-//QString str=QString("x = %1 y = %2 width = %3 height = %4").arg(ret.x()).arg(ret.y()).arg(width()).arg(height());
-//qDebug()<<str;
