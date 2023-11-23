@@ -30,7 +30,11 @@ void online::getTotalCnt()
 
 void online::getAllPerson()
 {
-
+    allPersor.resize(3);
+    for(int i=0;i<allPersor.size();i++)
+    {
+        this->allPersor[i]=QString("666").toUtf8().data();
+    }
 }
 
 void online::getPassword()

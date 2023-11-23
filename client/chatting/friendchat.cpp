@@ -97,7 +97,6 @@ void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
         QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),onlineperson[i]);
         item->setSizeHint(QSize(250,40));
         ui->listWidget->addItem(item);
-//        vQListWidgetItem.push_back(item);
     }
 }
 
@@ -112,9 +111,3 @@ void friendChat::showSignalChatting()
         s->show();
     });
 }
-
-//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().width(), 250));
-//vQListWidgetItem[i]->setSizeHint(QSize(vQListWidgetItem[i]->sizeHint().height(), 40));
-//QRect ret=ui->listWidget->visualItemRect(vQListWidgetItem[i]);
-//QString str=QString("x = %1 y = %2 width = %3 height = %4").arg(ret.x()).arg(ret.y()).arg(width()).arg(height());
-//qDebug()<<str;

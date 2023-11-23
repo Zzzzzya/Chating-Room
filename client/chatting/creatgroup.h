@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include<QVector>
+#include<QListWidgetItem>
 
 namespace Ui {
 class creatGroup;
@@ -16,6 +17,9 @@ public:
     explicit creatGroup(QWidget *parent = nullptr);
     void showMessage(QVector<QString> &onlineperson);
     void showNum(int cnt);
+    void clickedName();
+    QVector<QString>choosedName;
+    QVector<QListWidgetItem*>selectedItem;
     ~creatGroup();
 
 private slots:
