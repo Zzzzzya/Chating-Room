@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>picture/11.gif</file>
+        <file>picture/bold.jpg</file>
+        <file>picture/clear.jpg</file>
+        <file>picture/preserve.jpg</file>
+        <file>picture/setColor.jpg</file>
+        <file>picture/slope.jpg</file>
+        <file>picture/underline1.jpg</file>
+        <file>picture/wx.jpg</file>
+    </qresource>
+</RCC>
