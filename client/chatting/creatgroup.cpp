@@ -16,7 +16,7 @@ creatGroup::creatGroup(QWidget *parent) :
     on.getAllPerson();
     showMessage(on.allPersor);
     showNum(on.allPersor.size());
-    clickedName();
+    clickedName(on.allPersor.size());
 }
 
 creatGroup::~creatGroup()
@@ -35,11 +35,11 @@ void creatGroup::on_backBtn_clicked()
 //跳转到creatsuc界面&&将信息存到数据库
 void creatGroup::on_creatBtn_clicked()
 {
-    for(int i=0;i<this->selectedItem.size();i++)
+    for(QSet<QListWidgetItem*>::const_iterator it = selectedItem.begin(); it != selectedItem.end(); it++)
     {
-        this->choosedName.push_back(this->selectedItem[i]->text());
+        this->choosedName.push_back((*it)->text());
     }
-    craetGroupName *c=new craetGroupName();
+    craetGroupName *c=new craetGroupName(nullptr,this->choosedName);
     c->show();
     this->hide();
 }
@@ -49,13 +49,10 @@ void creatGroup::showMessage(QVector<QString> &allPersor)
 {
     for(int i=0;i<allPersor.size();i++)
     {
-        for(int i=0;i<allPersor.size();i++)
-        {
-            ui->listWidget->setIconSize(QSize(30,30));
-            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),allPersor[i]);
-            item->setSizeHint(QSize(250,40));
-            ui->listWidget->addItem(item);
-        }
+        ui->listWidget->setIconSize(QSize(30,30));
+        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),allPersor[i]);
+        item->setSizeHint(QSize(250,40));
+        ui->listWidget->addItem(item);
     }
 }
 
@@ -66,12 +63,23 @@ void creatGroup::showNum(int cnt)
     ui->numShowBtn->setText(str);
 }
 
-void creatGroup::clickedName()
+void creatGroup::clickedName(int cnt)
 {
     connect(ui->listWidget,&QListWidget::itemSelectionChanged,this,[=]()
     {
-        this->selectedItem.push_back(ui->listWidget->currentItem());
-        qDebug()<<6;
+        QListWidgetItem* item=ui->listWidget->currentItem();
+//        if(selectedItem.size()<cnt)
+//            this->selectedItem.insert(item);
+//        else
+//        {
+            for(QSet<QListWidgetItem*>::const_iterator it = selectedItem.begin(); it != selectedItem.end(); it++)
+            {
+                if(*it==item)
+                    this->selectedItem.erase(it);
+                else
+                    this->selectedItem.insert(item);
+            }
+//        }
     });
 }
 

@@ -17,9 +17,9 @@ public:
     explicit creatGroup(QWidget *parent = nullptr);
     void showMessage(QVector<QString> &onlineperson);
     void showNum(int cnt);
-    void clickedName();
+    void clickedName(int cnt);
     QVector<QString>choosedName;
-    QVector<QListWidgetItem*>selectedItem;
+    QSet<QListWidgetItem*>selectedItem;
     ~creatGroup();
 
 private slots:
