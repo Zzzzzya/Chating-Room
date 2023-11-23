@@ -42,11 +42,6 @@ void addApply::on_cancelBtn_clicked()
 void addApply::on_confirmBtn_clicked()
 {
     friendChat *f=new friendChat();
-    f->updateFriendList(new_name);  // 更新当前用户的好友列表
-
-    // 将当前用户名字添加到new_name用户的好友列表
-
-
     f->show();
     this->hide();
 }
