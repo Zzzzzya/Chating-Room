@@ -35,9 +35,9 @@ void creatGroup::on_backBtn_clicked()
 //跳转到creatsuc界面&&将信息存到数据库
 void creatGroup::on_creatBtn_clicked()
 {
-    for(QSet<QListWidgetItem*>::const_iterator it = selectedItem.begin(); it != selectedItem.end(); it++)
+    for(int i=0;i<selectedItem.size();i++)
     {
-        this->choosedName.push_back((*it)->text());
+        this->choosedName.push_back(selectedItem[i]->text());
     }
     craetGroupName *c=new craetGroupName(nullptr,this->choosedName);
     c->show();
@@ -68,18 +68,20 @@ void creatGroup::clickedName(int cnt)
     connect(ui->listWidget,&QListWidget::itemSelectionChanged,this,[=]()
     {
         QListWidgetItem* item=ui->listWidget->currentItem();
-//        if(selectedItem.size()<cnt)
-//            this->selectedItem.insert(item);
-//        else
-//        {
-            for(QSet<QListWidgetItem*>::const_iterator it = selectedItem.begin(); it != selectedItem.end(); it++)
+        bool ret=true;
+        for(QVector<QListWidgetItem*>::const_iterator it = selectedItem.begin(); it != selectedItem.end(); it++)
+        {
+            if(*it==item)
             {
-                if(*it==item)
-                    this->selectedItem.erase(it);
-                else
-                    this->selectedItem.insert(item);
+                this->selectedItem.erase(it);
+                ret=false;
+                break;
             }
-//        }
+        }
+        if(ret)
+        {
+            selectedItem.push_back(item);
+        }
     });
 }
 

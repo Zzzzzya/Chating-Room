@@ -12,8 +12,6 @@
 #include <QScrollArea>
 #include "signalchating.h"
 
-//QList<QListWidgetItem *>vQListWidgetItem;
-
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::friendChat)
@@ -26,7 +24,7 @@ friendChat::friendChat(QWidget *parent) :
     on.getOnlinePersor();
     showOnlineNumber(on.onlinePersor);
     on.getTotalCnt();
-    showOnlineNum(on.totalCnt,on.onlinePersor.size());
+    showOnlineNum(on.onlinePersor.size(),on.totalCnt);
     showSignalChatting();
 }
 
@@ -82,7 +80,7 @@ void friendChat::on_applyBtn_clicked()
 }
 
 //打印在线人数和总人数
-void friendChat::showOnlineNum(int total,int online)
+void friendChat::showOnlineNum(int online,int total)
 {
     QString str=QString("%1/%2").arg(online).arg(total);
     ui->numShowBtn->setText(str);

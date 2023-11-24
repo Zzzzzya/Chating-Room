@@ -17,10 +17,8 @@ public:
     void paintEvent(QPaintEvent* ev);
     void showOnlineNum(int total,int online);
     void showOnlineNumber(QVector<QString> &onlineperson);
+    void showSignalChatting();
     ~friendChat();
-
-public slots:
-    void updateFriendList(const QString& friendName);
 
 private slots:
     void on_friendBtn_clicked();
