@@ -50,8 +50,19 @@ void Register::on_registerBtn_clicked()
     this->hide();
 }
 
+//检查用户名是否已经存在
 bool Register::checkNameIsSame(QVector<QString> &allPerson)
 {
+    QString usernameInput = ui->name->text(); // 获取用户输入的用户名
 
+    for (const QString &existingName : allPerson)  // 遍历用户名向量
+    {
+        if (existingName == usernameInput)  // 检查用户名是否已存在
+        {
+            return true;  // 用户名已存在
+        }
+    }
+
+    return false;  // 用户名不存在
 }
 
