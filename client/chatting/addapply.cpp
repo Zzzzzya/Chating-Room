@@ -39,11 +39,18 @@ void addApply::on_cancelBtn_clicked()
 }
 
 //跳转到friendchat界面&&将信息存到数据库
-void addApply::on_confirmBtn_clicked()
+void addApply::on_confirmBtn_clicked()          // 同意后首先清除该请求
 {
-    friendChat *f=new friendChat();
-    f->show();
-    this->hide();
+    ui->message->setText("暂无未处理申请");
+/*
+    关于流程：
+    1、在数据库找到发起方
+    2、在当前用户的好友列表字段增加发起方
+    3、在数据库找到目的方
+    4、在发起方的好友列表字段增加当前用户
+    5、通知主界面更新ui
+*/
+
 }
 
 //将发送请求的名字打印
