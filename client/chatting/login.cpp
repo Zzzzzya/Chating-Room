@@ -61,8 +61,20 @@ void login::on_registerBtn_clicked()
     this->hide();
 }
 
+//检查用户名和密码是否匹配
 bool login::checkMessage(QVector<QString> &allPerson,QVector<QString> &password)
 {
+    QString usernameInput = ui->name->text();        // 获取用户输入的用户名
+    QString passwordInput = ui->password->text();    // 获取用户输入的密码
 
+    for (int i = 0; i < allPerson.size(); ++i)  // 遍历用户名向量
+    {
+        if (allPerson[i] == usernameInput && password[i] == passwordInput)  // 检查用户名和密码是否匹配
+        {
+            return true;  // 找到匹配，登录成功
+        }
+    }
+
+    return false;  // 遍历结束仍未找到匹配，登录失败
 }
 
