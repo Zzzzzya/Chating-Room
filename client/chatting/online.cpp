@@ -5,55 +5,26 @@ online::online()
 
 }
 
-void online::getOnlinePersor()
+
+void online::getAllPersonMessage()
 {
-//    onlinePersor.resize(10);
-//    for(int i=0;i<onlinePersor.size();i++)
-//    {
-//        this->onlinePersor[i]=QString("hao").toUtf8().data();
-//    }
-}
-void online::getgroupName()
-{
-//    groupName.resize(3);
-//    for(int i=0;i<groupName.size();i++)
-//    {
-//        this->groupName[i]=QString("666").toUtf8().data();
-//    }
+    //先向服务器发送要请求所有成员的消息
+    //解析出来的名字放在this->gallPersor上,密码放在this->password上,在线与不在线就放在this->onlinePersor上(1表示在线,0表示离线)
+    //三个信息为一组解析
 }
 
-void online::getTotalCnt()
+void online::getGroupPersonCnt()
 {
-//    totalCnt=8;
+    //先向服务器发送要请求每个群有多少人的信息
+    //解析出来的放在this->groupPersonCnt上
 }
 
-void online::getAllPerson()
+void online::getgroupPersonMessage()
 {
-//    allPersor.resize(3);
-//    for(int i=0;i<allPersor.size();i++)
-//    {
-//        this->allPersor[i]=QString("666").toUtf8().data();
-//    }
+    //先向服务器发送要请求所有群的信息
+    //解析出来的群昵称放在 this->groupName上,群成员放在this->groupPerson上
+    //根据每个群有多少人设置读取间隔
 }
 
-void online::getPassword()
-{
 
-}
 
-void online::getgroupPerson()
-{
-//    groupPerson.resize(5);
-//    for(int i=0;i<groupPerson.size();i++)
-//    {
-//        this->groupPerson[i]=QString("张大帅%1号").arg(i+1);
-//    }
-}
-void online::getGroupPersonIsOnline()
-{
-//    groupPersonIsOnline.resize(5);
-//    for(int i=0;i<groupPersonIsOnline.size();i++)
-//    {
-//        this->groupPersonIsOnline[i]=1;
-//    }
-}
