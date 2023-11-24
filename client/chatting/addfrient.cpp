@@ -2,14 +2,14 @@
 #include "ui_addfrient.h"
 #include "friendchat.h"
 #include "mysocket.h"
+#include <QMessageBox>
 
 extern MySocket *mysocket; // 引用全局变量
 addfrient::addfrient(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::addfrient)
 {
-//    MySocket *ms = new MySocket(nullptr);
-//    connect(this, &addfrient::confirmButtonClicked, ms, &MySocket::sendFriendRequest);
+
     ui->setupUi(this);
     setWindowTitle("添加好友");
     setFixedSize(340,240);
@@ -41,10 +41,17 @@ void addfrient::on_cancelBtn_clicked()
 //发送请求&显示发送成功&将信息清空
 void addfrient::on_confirmBtn_clicked()
 {
-    friendChat *f=new friendChat();
-    f->show();
+    // 获取框内输入内容
+    QString accountToAdd = ui->lineEdit->text();
+
+    // 发送好友请求
+    emit confirmButtonClicked(mysocket->m_username, accountToAdd);
+
+    // 显示发送成功的消息框
+    QMessageBox::information(this, "成功", "好友请求发送成功！");
+
+    // 清空信息
     ui->lineEdit->setText("");
-    emit confirmButtonClicked(ui->lineEdit->text());
-    this->hide();
+
 }
 

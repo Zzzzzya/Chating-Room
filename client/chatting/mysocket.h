@@ -19,6 +19,7 @@ class MySocket : public QObject
     Q_OBJECT
 
 public:
+    QString m_username;
     explicit MySocket(QObject *parent = nullptr);
     ~MySocket();
 
@@ -48,7 +49,7 @@ public slots:
     void deleteFriendResponse();
 
     // 发送好友申请
-    void sendFriendRequest(const QString& friend_account);
+    void sendFriendRequest(const QString &my_name, const QString &friend_account);
     void friendRequestResponse();
 
     // 发送好友消息
@@ -123,7 +124,7 @@ signals:
     void groupMessageReceived(const QString& message);
 private:
     SOCKET socketfd;
-    QString m_username;
+
     QByteArray buffer;  // 缓存
 
     bool sendMessagetoServer(const QByteArray &message);

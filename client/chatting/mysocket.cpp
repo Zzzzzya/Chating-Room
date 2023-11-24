@@ -319,10 +319,11 @@ void MySocket::deleteFriendResponse()
 
 }
 
-void MySocket::sendFriendRequest(const QString &friend_account)
+void MySocket::sendFriendRequest(const QString &my_name, const QString &friend_account)
 {
     // content的内容
     QJsonObject sendfriendContent;
+    sendfriendContent["applicant"] = my_name;
     sendfriendContent["friend_account"] = friend_account;
 
     QJsonObject messageObject;
