@@ -27,9 +27,10 @@ MySocket::MySocket(QObject *parent) : QObject(parent)
     connect(this, &MySocket::friendMessage_Response, this, &MySocket::friendMessageResponse);
     connect(this, &MySocket::groupCreate_Response, this, &MySocket::groupCreateReponse);
     connect(this, &MySocket::joinGroup_Response, this, &MySocket::joinGroupReponse);
-    connect(this, &MySocket::leaveGroup_Response, this, &MySocket::leaveGroupReponse);
+    connect(this, &MySocket::leaveGroup_Response, this, &MySocket::leaveGroupReponse);    
     connect(this, &MySocket::friendListReceived, this, &MySocket::getFriendListResponse);
     connect(this, &MySocket::groupListReceived, this, &MySocket::getGroupListResponse);
+    connect(this, &MySocket::groupMembersCountReceived, this, &MySocket::getGroupMemberCountResponse);
     connect(this, &MySocket::groupMessage_Response, this, &MySocket::groupMessageResponse);
 
 }
@@ -217,15 +218,18 @@ void MySocket::requestFriendList(const QString &username)
 
 void MySocket::getFriendListResponse()
 {
-    const QJsonObject& jsonObject = receiveMessageFromServer();
+    const QJsonObject& jsonObject = receiveMessageFromServer();     // 从服务器接收到的数据
 
     QString type = jsonObject["type"].toString();
     QString subtype = jsonObject["subtype"].toString();
     bool success = jsonObject["success"].toBool();
-    QJsonArray message = jsonObject["message"].toArray();
 
-    if (success == true)
+    // 需要展现在ui上的数据
+    QJsonArray message = jsonObject["message"].toArray();
+    // 确保成功获取且一维数组长度是偶数（每两个元素表示一个好友的信息）
+    if (success == true && message.size() % 2 == 0)
     {
+        // message 的解析需要在调用该函数的类中的槽函数实现
         emit friendListUpdated(message); // 将传回的好友列表作为参数传递
     }
     else
@@ -434,6 +438,45 @@ void MySocket::getGroupListResponse()
         qDebug() << "获取群组列表失败!";
     }
 
+}
+
+void MySocket::requestGroupMemberCount(const QString &groupName)
+{
+    QJsonObject requestObject;
+    requestObject["type"] = "request";
+    requestObject["subtype"] = "get_groupMembers_count";
+
+    // 创建 content 对象并添加 groupName 字段
+    QJsonObject contentObject;
+    contentObject["groupName"] = groupName;
+    requestObject["content"] = contentObject;
+
+    QJsonDocument doc(contentObject);
+    // 发送消息到服务器
+    sendMessagetoServer(doc.toJson());
+    // 发送信号以调用服务器响应函数
+    emit groupMembersCountReceived();
+}
+
+void MySocket::getGroupMemberCountResponse()
+{
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+    QString type = jsonObject["type"].toString();
+    QString subtype = jsonObject["subtype"].toString();
+    bool success = jsonObject["success"].toBool();
+
+    // 获取包含成员信息的 JSON 对象
+    QJsonObject message = jsonObject["message"].toObject();
+
+    if (success)
+    {
+        // 发送信号，将包含成员信息的 JSON 对象作为参数传递
+        emit groupMembersCountUpdated(message);
+    }
+    else
+    {
+        qDebug() << "获取群成员列表失败!";
+    }
 }
 
 void MySocket::createGroup(const QString &username, const QString &groupName, const QStringList &members)

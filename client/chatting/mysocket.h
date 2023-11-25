@@ -60,6 +60,10 @@ public slots:
     void requestGroupList(const QString& username);
     void getGroupListResponse();
 
+    // 请求群的成员以及人数
+    void requestGroupMemberCount(const QString& groupName);
+    void getGroupMemberCountResponse();
+
     // 创建群组
     void createGroup(const QString &username, const QString& groupName, const QStringList& members);
     void groupCreateReponse();
@@ -115,6 +119,11 @@ signals:
     void groupListReceived();
     // 发送信号通知 UI 更新群聊列表
     void groupListUpdated(QJsonArray friendList);
+    // 当前群聊的人数和成员已收到的信号
+    void groupMembersCountReceived();
+    // 通知ui更新当前群聊的人数和成员
+    void groupMembersCountUpdated(QJsonObject memberCount);
+
 
     // 发送群聊消息响应函数
     void groupMessage_Response();
