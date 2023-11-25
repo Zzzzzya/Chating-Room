@@ -5,7 +5,7 @@
 #include "addfrient.h"
 #include "creatgroup.h"
 #include "addapply.h"
-#include "online.h"
+#include "usersql.h"
 #include<QToolButton>
 #include<QDebug>
 #include<QListWidget>
@@ -20,10 +20,9 @@ friendChat::friendChat(QWidget *parent) :
     setWindowTitle("好友");
     setFixedSize(250,410);
     //获取数有关据库信息
-    online on;
-    on.getAllPersonMessage();
-    showOnlineNumber(on.allPersor,on.onlinePersor);
-    showSignalChatting();
+    UserSql user;
+    user.getUserFriendMessage();
+    showOnlineNumber(user.userFriend,user.friendIsOnline);
 }
 
 friendChat::~friendChat()
@@ -78,21 +77,21 @@ void friendChat::on_applyBtn_clicked()
 }
 
 //显示在线的成员以及在线人数
-void friendChat::showOnlineNumber(QVector<QString> &allPersor,QVector<int>onlinePersor)
+void friendChat::showOnlineNumber(QVector<QString> &userFriend,QVector<int>&friendIsOnline)
 {
     int cnt=0;
-    for(int i=0;i<allPersor.size();i++)
+    for(int i=0;i<userFriend.size();i++)
     {
-        if(onlinePersor[i]==1)
+        if(friendIsOnline[i]==1)
         {
             cnt++;
             ui->listWidget->setIconSize(QSize(30,30));
-            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),allPersor[i]);
+            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),userFriend[i]);
             item->setSizeHint(QSize(250,40));
             ui->listWidget->addItem(item);
         }
     }
-    QString str=QString("%1/%2").arg(cnt).arg(allPersor.size());
+    QString str=QString("%1/%2").arg(cnt).arg(userFriend.size());
     ui->numShowBtn->setText(str);
 }
 

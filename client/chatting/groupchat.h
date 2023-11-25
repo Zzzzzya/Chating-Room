@@ -14,8 +14,7 @@ class groupchat : public QWidget
 
 public:
     explicit groupchat(QWidget *parent = nullptr);
-    void showOnlineNum(int total);
-    void showOnlineNumber(QVector<QString>&group_name);
+    void showOnlineNumber(QVector<QString> &groupName);
     void showGroupChatting();
     ~groupchat();
 

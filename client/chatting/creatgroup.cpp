@@ -1,7 +1,7 @@
 #include "creatgroup.h"
 #include "ui_creatgroup.h"
 #include "groupchat.h"
-#include"online.h"
+#include "usersql.h"
 #include<QCheckBox>
 #include "craetgroupname.h"
 
@@ -12,11 +12,9 @@ creatGroup::creatGroup(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("创建群聊");
     setFixedSize(250,350);
-    online on;
-    on.getAllPersonMessage();
-    showMessage(on.allPersor);
-    showNum(on.allPersor.size());
-    clickedName(on.allPersor.size());
+    UserSql user;
+    user.getUserFriendMessage();
+    showMessage(user.userFriend);
 }
 
 creatGroup::~creatGroup()
@@ -44,23 +42,18 @@ void creatGroup::on_creatBtn_clicked()
     this->hide();
 }
 
-//显示在线人信息
-void creatGroup::showMessage(QVector<QString> &allPersor)
+//显示人信息&&人数
+void creatGroup::showMessage(QVector<QString> &userFriend)
 {
-    for(int i=0;i<allPersor.size();i++)
+    QString str=QString("%1").arg(userFriend.size());
+    ui->numShowBtn->setText(str);
+    for(int i=0;i<userFriend.size();i++)
     {
         ui->listWidget->setIconSize(QSize(30,30));
-        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),allPersor[i]);
+        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),userFriend[i]);
         item->setSizeHint(QSize(250,40));
         ui->listWidget->addItem(item);
     }
-}
-
-//显示在线人数
-void creatGroup::showNum(int cnt)
-{
-    QString str=QString("%1").arg(cnt);
-    ui->numShowBtn->setText(str);
 }
 
 void creatGroup::clickedName(int cnt)

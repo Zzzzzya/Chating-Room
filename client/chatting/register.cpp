@@ -2,7 +2,7 @@
 #include "ui_register.h"
 #include<QPainter>
 #include "register_success.h"
-#include"online.h"
+#include "usersql.h"
 
 Register::Register(QWidget *parent) :
     QWidget(parent),
@@ -14,9 +14,10 @@ Register::Register(QWidget *parent) :
     ui->name->setText("输入账号");
     ui->password->setText("输入密码");
     //获取数有关据库信息
-    online on;
+    UserSql user;
+    user.getAllUserMessage();
+    checkNameIsSame(user.allUserName);
 }
-
 void Register::paintEvent(QPaintEvent* ev)
 {
     QPainter painter(this);
@@ -50,7 +51,7 @@ void Register::on_registerBtn_clicked()
     this->hide();
 }
 
-bool Register::checkNameIsSame(QVector<QString> &allPerson)
+bool Register::checkNameIsSame(QVector<QString> &allUserName)
 {
 
 }

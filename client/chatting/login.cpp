@@ -5,7 +5,7 @@
 #include<QFont>
 #include "friendchat.h"
 #include "register.h"
-#include"online.h"
+#include "usersql.h"
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -17,7 +17,9 @@ login::login(QWidget *parent) :
     ui->name->setText("输入账号");
     ui->password->setText("输入密码");
     //获取数有关据库信息
-    online on;
+    UserSql user;
+    user.getAllUserMessage();
+    checkMessage(user.allUserName,user.allUserPassword);
 }
 
 void login::paintEvent(QPaintEvent* ev)
@@ -61,7 +63,7 @@ void login::on_registerBtn_clicked()
     this->hide();
 }
 
-bool login::checkMessage(QVector<QString> &allPerson,QVector<QString> &password)
+bool login::checkMessage(QVector<QString> &allUserName,QVector<QString> &allUserPassword)
 {
 
 }

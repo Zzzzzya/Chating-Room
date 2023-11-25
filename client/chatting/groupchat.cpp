@@ -4,7 +4,7 @@
 #include "addfrient.h"
 #include "creatgroup.h"
 #include "addapply.h"
-#include "online.h"
+#include "usersql.h"
 #include "groupchatting.h"
 
 
@@ -16,11 +16,9 @@ groupchat::groupchat(QWidget *parent) :
     setWindowTitle("群聊");
     setFixedSize(250,410);
     //获取数有关据库信息
-    online on;
-    on.getgroupPersonMessage();
-    showOnlineNumber(on.groupName);
-    showOnlineNum(on.groupName.size());
-    showGroupChatting();
+    UserSql user;
+    user.getUserGroupMessage();
+    showOnlineNumber(user.groupName);
 }
 
 groupchat::~groupchat()
@@ -66,20 +64,15 @@ void groupchat::on_applyBtn_clicked()
     this->hide();
 }
 
-//打印群在线人数
-void groupchat::showOnlineNum(int total)
+//打印群信息&&群个数
+void groupchat::showOnlineNumber(QVector<QString> &groupName)
 {
-    QString str=QString("%1").arg(total);
+    QString str=QString("%1").arg(groupName.size());
     ui->numShowBtn->setText(str);
-}
-
-//打印群在线人信息
-void groupchat::showOnlineNumber(QVector<QString> &group_name)
-{
-    for(int i=0;i<group_name.size();i++)
+    for(int i=0;i<groupName.size();i++)
     {
         ui->listWidget->setIconSize(QSize(30,30));
-        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),group_name[i]);
+        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),groupName[i]);
         item->setSizeHint(QSize(250,40));
         ui->listWidget->addItem(item);
     }

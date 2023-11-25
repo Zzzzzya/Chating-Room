@@ -15,7 +15,7 @@ class creatGroup : public QWidget
 
 public:
     explicit creatGroup(QWidget *parent = nullptr);
-    void showMessage(QVector<QString> &onlineperson);
+    void showMessage(QVector<QString> &userFriend);
     void showNum(int cnt);
     void clickedName(int cnt);
     QVector<QString>choosedName;

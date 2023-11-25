@@ -15,7 +15,7 @@ class friendChat : public QWidget
 public:
     explicit friendChat(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent* ev);
-    void showOnlineNumber(QVector<QString> &allPersor,QVector<int>onlinePersor);
+    void showOnlineNumber(QVector<QString> &userFriend,QVector<int>&friendIsOnline);
     void showSignalChatting();
     ~friendChat();
 

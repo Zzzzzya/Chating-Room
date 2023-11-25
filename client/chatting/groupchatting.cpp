@@ -1,17 +1,23 @@
 #include "groupchatting.h"
 #include "ui_groupchatting.h"
 #include<QColorDialog>
-#include"online.h"
+#include "usersql.h"
 
 groupChatting::groupChatting(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::groupChatting)
 {
     ui->setupUi(this);
-    online on;
-    on.getAllPersonMessage();
-    on.getgroupPersonMessage();
-    setTableWidget(on.groupPerson,on.allPersor,on.onlinePersor);
+    UserSql user;
+    user.getUserGroupMessage();
+    user.getUserFriendMessage();
+    for(int i=0;i<user.groupName.size();i++)
+    {
+        if(user.groupName[i]==windowTitle())
+        {
+            setTableWidget(user.groupNumberName[i],user.userFriend,user.friendIsOnline);
+        }
+    }
 }
 
 groupChatting::~groupChatting()
@@ -93,30 +99,30 @@ void groupChatting::on_exitBtn_clicked()
     this->hide();
 }
 
-void groupChatting::setTableWidget(QVector<QString>groupPerson,QVector<QString>allPersor,QVector<int>onlinePersor)
+void groupChatting::setTableWidget(QVector<QString>groupNumberName,QVector<QString>userFriend,QVector<int>friendIsOnline)
 {
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"成员"<<"在线情况");
-    ui->tableWidget->setRowCount(groupPerson.size());
-    for(int i=0;i<groupPerson.size();i++)
+    ui->tableWidget->setRowCount(groupNumberName.size());
+    for(int i=0;i<groupNumberName.size();i++)
     {
         for(int j=0;j<2;j++)
         {
             if(j==0)
             {
-                ui->tableWidget->setItem(i,j,new QTableWidgetItem(groupPerson[i]));
+                ui->tableWidget->setItem(i,j,new QTableWidgetItem(groupNumberName[i]));
             }
             if(j==1)
             {
-                for(int k=0;k<allPersor.size();k++)
+                for(int k=0;k<userFriend.size();k++)
                 {
-                    if(groupPerson[i]==allPersor[k])
+                    if(groupNumberName[i]==userFriend[k])
                     {
-                        if(onlinePersor[k]==0)
+                        if(friendIsOnline[k]==0)
                         {
                             ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
                         }
-                        if(onlinePersor[k]==1)
+                        if(friendIsOnline[k]==1)
                         {
                             ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
                         }

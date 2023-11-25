@@ -21,10 +21,10 @@ SOURCES += \
     login.cpp \
     main.cpp \
     mysocket.cpp \
-    online.cpp \
     register.cpp \
     register_success.cpp \
-    signalchating.cpp
+    signalchating.cpp \
+    usersql.cpp
 
 HEADERS += \
     addapply.h \
@@ -37,10 +37,10 @@ HEADERS += \
     groupchatting.h \
     login.h \
     mysocket.h \
-    online.h \
     register.h \
     register_success.h \
-    signalchating.h
+    signalchating.h \
+    usersql.h
 
 FORMS += \
     addapply.ui \
