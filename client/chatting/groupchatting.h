@@ -13,7 +13,7 @@ class groupChatting : public QWidget
 
 public:
     explicit groupChatting(QWidget *parent = nullptr);
-    void setTableWidget(QVector<QString>&groupPerson,QVector<int>&groupPersonIsOnline);
+    void setTableWidget(QVector<QString>groupPerson,QVector<QString>allPersor,QVector<int>onlinePersor);
     QString GName;
     ~groupChatting();
 private:

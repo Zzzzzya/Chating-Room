@@ -17,7 +17,7 @@ groupchat::groupchat(QWidget *parent) :
     setFixedSize(250,410);
     //获取数有关据库信息
     online on;
-    on.getgroupName();
+    on.getgroupPersonMessage();
     showOnlineNumber(on.groupName);
     showOnlineNum(on.groupName.size());
     showGroupChatting();

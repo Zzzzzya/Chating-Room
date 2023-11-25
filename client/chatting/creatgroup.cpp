@@ -13,7 +13,7 @@ creatGroup::creatGroup(QWidget *parent) :
     setWindowTitle("创建群聊");
     setFixedSize(250,350);
     online on;
-    on.getAllPerson();
+    on.getAllPersonMessage();
     showMessage(on.allPersor);
     showNum(on.allPersor.size());
     clickedName(on.allPersor.size());

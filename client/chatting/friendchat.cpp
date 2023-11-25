@@ -21,10 +21,8 @@ friendChat::friendChat(QWidget *parent) :
     setFixedSize(250,410);
     //获取数有关据库信息
     online on;
-    on.getOnlinePersor();
-    showOnlineNumber(on.onlinePersor);
-    on.getTotalCnt();
-    showOnlineNum(on.onlinePersor.size(),on.totalCnt);
+    on.getAllPersonMessage();
+    showOnlineNumber(on.allPersor,on.onlinePersor);
     showSignalChatting();
 }
 
@@ -79,23 +77,23 @@ void friendChat::on_applyBtn_clicked()
     this->hide();
 }
 
-//打印在线人数和总人数
-void friendChat::showOnlineNum(int online,int total)
+//显示在线的成员以及在线人数
+void friendChat::showOnlineNumber(QVector<QString> &allPersor,QVector<int>onlinePersor)
 {
-    QString str=QString("%1/%2").arg(online).arg(total);
-    ui->numShowBtn->setText(str);
-}
-
-//显示在线的成员
-void friendChat::showOnlineNumber(QVector<QString> &onlineperson)
-{
-    for(int i=0;i<onlineperson.size();i++)
+    int cnt=0;
+    for(int i=0;i<allPersor.size();i++)
     {
-        ui->listWidget->setIconSize(QSize(30,30));
-        QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),onlineperson[i]);
-        item->setSizeHint(QSize(250,40));
-        ui->listWidget->addItem(item);
+        if(onlinePersor[i]==1)
+        {
+            cnt++;
+            ui->listWidget->setIconSize(QSize(30,30));
+            QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),allPersor[i]);
+            item->setSizeHint(QSize(250,40));
+            ui->listWidget->addItem(item);
+        }
     }
+    QString str=QString("%1/%2").arg(cnt).arg(allPersor.size());
+    ui->numShowBtn->setText(str);
 }
 
 void friendChat::showSignalChatting()

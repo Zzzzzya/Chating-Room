@@ -9,9 +9,9 @@ groupChatting::groupChatting(QWidget *parent) :
 {
     ui->setupUi(this);
     online on;
-    on.getgroupPerson();
-    on.getGroupPersonIsOnline();
-    setTableWidget(on.groupPerson,on.groupPersonIsOnline);
+    on.getAllPersonMessage();
+    on.getgroupPersonMessage();
+    setTableWidget(on.groupPerson,on.allPersor,on.onlinePersor);
 }
 
 groupChatting::~groupChatting()
@@ -93,7 +93,7 @@ void groupChatting::on_exitBtn_clicked()
     this->hide();
 }
 
-void groupChatting::setTableWidget(QVector<QString>&groupPerson,QVector<int>&groupPersonIsOnline)
+void groupChatting::setTableWidget(QVector<QString>groupPerson,QVector<QString>allPersor,QVector<int>onlinePersor)
 {
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"成员"<<"在线情况");
@@ -108,13 +108,23 @@ void groupChatting::setTableWidget(QVector<QString>&groupPerson,QVector<int>&gro
             }
             if(j==1)
             {
-                if(groupPersonIsOnline[i]==0)
+                for(int k=0;k<allPersor.size();k++)
                 {
-                    ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
-                }
-                else
-                {
-                    ui->tableWidget->setItem(i,j,new QTableWidgetItem("在线"));
+                    if(groupPerson[i]==allPersor[k])
+                    {
+                        if(onlinePersor[k]==0)
+                        {
+                            ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
+                        }
+                        if(onlinePersor[k]==1)
+                        {
+                            ui->tableWidget->setItem(i,j,new QTableWidgetItem("离线"));
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
