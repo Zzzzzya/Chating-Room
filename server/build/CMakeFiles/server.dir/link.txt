@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/server.dir/src/ConnectionPool.cpp.o CMakeFiles/server.dir/src/MysqlConn.cpp.o CMakeFiles/server.dir/src/server.cpp.o  -o server  -lpthread -lmysqlclient 

@@ -1,0 +1,3 @@
+/home/ubuntu/code/Chating-Room/server/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/code/Chating-Room/server/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/code/Chating-Room/server/build/CMakeFiles/server.dir
