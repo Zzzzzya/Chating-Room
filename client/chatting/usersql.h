@@ -8,9 +8,6 @@ class UserSql
 public:
     UserSql();
 public:
-    //用于登录和注册用的全部信息
-    QVector<QString>allUserName;
-    QVector<QString>allUserPassword;
     //好友信息
     QVector<QString>userFriend;
     QVector<int>friendIsOnline;

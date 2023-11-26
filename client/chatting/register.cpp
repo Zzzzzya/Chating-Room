@@ -51,8 +51,8 @@ void Register::on_registerBtn_clicked()
     this->hide();
 }
 
-bool Register::checkNameIsSame(QVector<QString> &allUserName)
+bool Register::checkNameIsSame()
 {
-
+    //调用Mysocket里的函数去检测
 }
 

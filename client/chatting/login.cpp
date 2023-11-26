@@ -5,7 +5,6 @@
 #include<QFont>
 #include "friendchat.h"
 #include "register.h"
-#include "usersql.h"
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -16,10 +15,7 @@ login::login(QWidget *parent) :
     setWindowTitle("凌烟阁聊天室");
     ui->name->setText("输入账号");
     ui->password->setText("输入密码");
-    //获取数有关据库信息
-    UserSql user;
-    user.getAllUserMessage();
-    checkMessage(user.allUserName,user.allUserPassword);
+
 }
 
 void login::paintEvent(QPaintEvent* ev)
@@ -63,8 +59,8 @@ void login::on_registerBtn_clicked()
     this->hide();
 }
 
-bool login::checkMessage(QVector<QString> &allUserName,QVector<QString> &allUserPassword)
+bool login::checkMessage()
 {
-
+    //调用Mysocket里的函数去匹配
 }
 
