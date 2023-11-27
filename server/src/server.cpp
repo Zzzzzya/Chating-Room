@@ -9,7 +9,7 @@
 #include <time.h>
 #include <stddef.h>
 #include <errno.h>
-#define MAX_EVENTS 10
+#define MAX_EVENTS 1024
 #define BUFFER_SIZE 1024
 
 void print_log(const char *ip, const char *msg) {
@@ -19,6 +19,88 @@ void print_log(const char *ip, const char *msg) {
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm);
 
     printf("[%s] %s: %s\n", time_str, ip, msg);
+}
+
+void read_callback(int fd,int epfd) {
+    char buffer[BUF_SIZE];
+    int len= read(fd, buffer, sizeof(buffer));
+    buffer[len] ='\0';
+    // 从 epoll 实例中移除客户端文件描述符
+    if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, nullptr) < 0) {
+        cerr << "failed to remove client socket from epoll instance" << endl;
+    }
+    if (len > 0) {
+        // 进行读取操作并对数据进行处理
+        string request(buffer,len);
+        handleJsonRequest(request,fd);
+	}else if (len == 0) {
+        // 客户端关闭连接，需要进行关闭和清理操作
+        cout << "client disconnected" << endl;
+        close(fd);
+    }else {
+        // 发生错误，需要进行错误处理
+        cerr << "read() error on fd " << fd << endl;
+        close(fd);
+	}
+}
+
+
+void handleJsonRequest (const string& json,int& cfd)
+{  
+		Json::Value root;
+        Json::Reader reader;
+        if (!reader.parse(json,root)) {
+            cerr << "failed to parse JSON" << endl;
+            return;
+        }
+        string type = root["type"].asString();
+        if (type != "request"&&type!= "message") {
+            cerr << "invalid JSON: type is not 'request' and 'message' " << endl;
+            return;
+        }
+        string subtype = root["subtype"].asString();
+       
+	if (type =="request") {
+		if (subtype =="login") {
+		string username = root["username"].asString();
+		string password = root["password"].asString();
+		handleLogin (username,password,subtype,cfd);
+		}
+		else if (subtype == "register"){
+		//以下函数同login一样的格式 获取对应的username 
+		handleResister ();
+		}
+		else if (subtype =="add friend") {
+		handleaddFriend ();
+		}		
+		else if (subtype =="del friend") {
+		 handleDeleteFriend ();
+		}
+		else if (subtype == "app_friend") {
+		handleappfriend ();
+		}
+		else if (subtype == "get_friend list") {
+		handleGetRriendList ();
+		}
+		else if (subtype =="get_group_list"){
+		handleGetGroupList ();
+		}
+		else if (subtype =="getgroupmenber_count") {
+		han_getgroupMember_count();
+		}
+		else if (subtype == "create_group" ){
+		handleCreateGroup ();
+		}
+		else if (subtype ==" join group") {
+		handleJoinGroup ();
+		}
+		else if (subtype == "leave _group") {
+		handleLeaveGroup ();
+		}
+	}
+		else if (type == "group _message") {
+		handleGroupMessage ();
+		}
 }
 
 int main() {
@@ -113,42 +195,7 @@ int main() {
                 printf("New client connected: %s\n", cli_ip);
             } else {
                 
-                char buffer[BUFFER_SIZE];
-                ssize_t bytes_read;
-
-                while (1) {
-                    bytes_read = read(events[i].data.fd, buffer, BUFFER_SIZE);
-                    if (bytes_read == 0) {
-                        
-                        close(events[i].data.fd);
-
-                        
-                        char cli_ip[INET_ADDRSTRLEN];
-                        inet_ntop(cli_addr.sin_family, &cli_addr.sin_addr, cli_ip, INET_ADDRSTRLEN);
-                        printf("Client disconnected: %s\n", cli_ip);
-
-                        break;
-                    } else if (bytes_read == -1) {
-                        if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                            
-                            break;
-                        }
-                        perror("read failed");
-                        close(events[i].data.fd);
-
-                        
-                        char cli_ip[INET_ADDRSTRLEN];
-                        inet_ntop(cli_addr.sin_family, &cli_addr.sin_addr, cli_ip, INET_ADDRSTRLEN);
-                        printf("Client disconnected: %s\n", cli_ip);
-
-                        break;
-                    }
-
-                    
-                    buffer[bytes_read] = '\0';
-                    char cli_ip[INET_ADDRSTRLEN];
-                    inet_ntop(cli_addr.sin_family, &cli_addr.sin_addr, cli_ip, INET_ADDRSTRLEN);
-                    print_log(cli_ip, buffer);
+                    read_callback(events[i].data.fd,epoll_fd)
 
                     
                     write(events[i].data.fd, buffer, bytes_read);
