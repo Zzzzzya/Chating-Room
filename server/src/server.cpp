@@ -9,6 +9,11 @@
 #include <time.h>
 #include <stddef.h>
 #include <errno.h>
+#include <iostream>
+#include <jsoncpp/json/json.h>
+#include "MysqlConn.h"
+#include "ConnectionPool.h"
+
 #define MAX_EVENTS 1024
 #define BUFFER_SIZE 1024
 
@@ -22,85 +27,91 @@ void print_log(const char *ip, const char *msg) {
 }
 
 void read_callback(int fd,int epfd) {
-    char buffer[BUF_SIZE];
+    char buffer[BUFFER_SIZE];
     int len= read(fd, buffer, sizeof(buffer));
     buffer[len] ='\0';
     // 从 epoll 实例中移除客户端文件描述符
     if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, nullptr) < 0) {
-        cerr << "failed to remove client socket from epoll instance" << endl;
+        std::cerr << "failed to remove client socket from epoll instance" << std::endl;
     }
     if (len > 0) {
         // 进行读取操作并对数据进行处理
-        string request(buffer,len);
+        std::string request(buffer,len);
         handleJsonRequest(request,fd);
 	}else if (len == 0) {
         // 客户端关闭连接，需要进行关闭和清理操作
-        cout << "client disconnected" << endl;
+        std::cout << "client disconnected" << std::endl;
         close(fd);
     }else {
         // 发生错误，需要进行错误处理
-        cerr << "read() error on fd " << fd << endl;
+        std::cerr << "read() error on fd " << fd << std::endl;
         close(fd);
 	}
 }
 
 
-void handleJsonRequest (const string& json,int& cfd)
+void handleJsonRequest (const std::string& json,int& cfd)
 {  
+        // 创建一个连接池pool
+        ConnectionPool* pool = ConnectionPool::getConnectionPool();
 		Json::Value root;
         Json::Reader reader;
         if (!reader.parse(json,root)) {
-            cerr << "failed to parse JSON" << endl;
+            std::cerr << "failed to parse JSON" << std::endl;
+            // 解析失败，析构pool
+            pool->~ConnectionPool();
             return;
         }
-        string type = root["type"].asString();
+        std::string type = root["type"].asString();
         if (type != "request"&&type!= "message") {
-            cerr << "invalid JSON: type is not 'request' and 'message' " << endl;
+            std::cerr << "invalid JSON: type is not 'request' and 'message' " << std::endl;
+            // 解析失败，析构pool
+            pool->~ConnectionPool();
             return;
         }
-        string subtype = root["subtype"].asString();
+        std::string subtype = root["subtype"].asString();
        
 	if (type =="request") {
 		if (subtype =="login") {
-		string username = root["username"].asString();
-		string password = root["password"].asString();
-		handleLogin (username,password,subtype,cfd);
-		}
-		else if (subtype == "register"){
-		//以下函数同login一样的格式 获取对应的username 
-		handleResister ();
+            std::string username = root["username"].asString();
+            std::string password = root["password"].asString();
+            handleLogin (username,password,subtype,cfd);
+        }
+        else if (subtype == "register"){
+            //以下函数同login一样的格式 获取对应的username 
+            handleResister ();
 		}
 		else if (subtype =="add friend") {
-		handleaddFriend ();
+		    handleaddFriend ();
 		}		
 		else if (subtype =="del friend") {
-		 handleDeleteFriend ();
+		    handleDeleteFriend ();
 		}
 		else if (subtype == "app_friend") {
-		handleappfriend ();
+		    handleappfriend ();
 		}
 		else if (subtype == "get_friend list") {
-		handleGetRriendList ();
+		    handleGetRriendList ();
 		}
 		else if (subtype =="get_group_list"){
-		handleGetGroupList ();
+		    handleGetGroupList ();
 		}
 		else if (subtype =="getgroupmenber_count") {
-		han_getgroupMember_count();
+		    han_getgroupMember_count();
 		}
 		else if (subtype == "create_group" ){
-		handleCreateGroup ();
+		    handleCreateGroup ();
 		}
 		else if (subtype ==" join group") {
-		handleJoinGroup ();
+		    handleJoinGroup ();
 		}
 		else if (subtype == "leave _group") {
-		handleLeaveGroup ();
+		    handleLeaveGroup ();
 		}
-	}
 		else if (type == "group _message") {
-		handleGroupMessage ();
+		    handleGroupMessage ();
 		}
+    }
 }
 
 int main() {
@@ -205,7 +216,7 @@ int main() {
                 }
             }
         }
-    }
+    
 
     close(listen_fd);
     close(epoll_fd);

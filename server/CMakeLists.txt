@@ -10,6 +10,6 @@ include_directories(
 )
 
 # Link necessary libraries
-target_link_libraries(server pthread mysqlclient)
+target_link_libraries(server pthread mysqlclient jsoncpp)
 
 
