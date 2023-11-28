@@ -13,9 +13,14 @@
 #include <jsoncpp/json/json.h>
 #include "MysqlConn.h"
 #include "ConnectionPool.h"
+#include <memory>
+#include <random>
+
 
 #define MAX_EVENTS 1024
 #define BUFFER_SIZE 1024
+#define DB_IP "111.229.188.220"
+#define DB_PORT 8000
 
 void print_log(const char *ip, const char *msg) {
     time_t t = time(NULL);
@@ -75,7 +80,7 @@ void handleJsonRequest (const std::string& json,int& cfd)
 		if (subtype =="login") {
             std::string username = root["username"].asString();
             std::string password = root["password"].asString();
-            handleLogin (username,password,subtype,cfd);
+            handleLogin (pool,username,password,subtype,cfd);
         }
         else if (subtype == "register"){
             //以下函数同login一样的格式 获取对应的username 
@@ -93,25 +98,234 @@ void handleJsonRequest (const std::string& json,int& cfd)
 		else if (subtype == "get_friend list") {
 		    handleGetRriendList ();
 		}
+
+        /*
+            XiaoLin's Part
+        */
 		else if (subtype =="get_group_list"){
-		    handleGetGroupList ();
+            std::string user_name = root["username"].asString();
+            std::string password = root["password"].asString();
+		    handleGetGroupList (pool, user_name , password);
 		}
 		else if (subtype =="getgroupmenber_count") {
-		    han_getgroupMember_count();
+            std::string group_name = root["groupName"].asString();
+		    han_getgroupMember_count(pool , group_name);
 		}
 		else if (subtype == "create_group" ){
-		    handleCreateGroup ();
+            std::string user_name = root["username"].asString();
+            std::string group_name = root["group_name"].asString();
+            std::string members = root["member"].asString();
+		    handleCreateGroup (pool , user_name , group_name , members);
 		}
 		else if (subtype ==" join group") {
-		    handleJoinGroup ();
+            std::string user_name = root["username"].asString();
+            std::string group_name = root["group_name"].asString();
+		    handleJoinGroup (pool ,user_name , group_name);
 		}
 		else if (subtype == "leave _group") {
-		    handleLeaveGroup ();
+            std::string user_name = root["username"].asString();
+            std::string group_name = root["group_name"].asString();
+		    handleLeaveGroup (pool ,user_name ,group_name);
 		}
 		else if (type == "group _message") {
-		    handleGroupMessage ();
+            std::string user_name = root["username"].asString();
+            std::string group_name = root["sender"].asString();
+            std::string time = root["time"].asString();
+            std::string data = root["data"].asString();
+		    handleGroupMessage (pool , user_name , group_name , time , data);
 		}
     }
+}
+
+void handleGetGroupList(ConnectionPool* pool , const std::string& user_name , const std::string& password)
+{
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+
+    std::string sql = "select * from groups where \
+    JOIN user_groups ON groups.group_name = user_groups.group_name\
+    JOIN users ON user_groups.user_name = users.user_name \
+    WHERE users.user_name = " + user_name + ";";
+
+    conn->query(sql);
+
+    // 从结果集中取出一行
+    while (conn->next())
+    {
+        // 打印每行字段值
+        std::cout << conn->value(0) << ", "
+            << conn->value(1) << ", "
+            << conn->value(2) << ", "
+            << conn->value(3) << std::endl;
+    }
+}
+
+void han_getgroupMember_count(ConnectionPool* pool , const std::string& group_name )
+{
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+
+    std::string sql = R"(select count(*) from groups
+    join user_groups on user_groups.group_name = groups.group_name
+    where groups.group_name =)"+ group_name + R"(;)";
+
+    conn->query(sql);
+
+    // 从结果集中取出一行
+    while (conn->next())
+    {
+        // 打印每行字段值
+        std::cout << conn->value(0) << ", "
+            << conn->value(1) << ", "
+            << conn->value(2) << ", "
+            << conn->value(3) << std::endl;
+    }
+}
+
+void handleCreateGroup (ConnectionPool* pool , const std::string& user_name , const std::string& group_name ,const std::string members)
+{
+    // 检测group_name 是否为空
+    if(group_name.empty()) {
+        std::cerr << "Error : Group Name cannot be empty" << std::endl;
+        return ;
+    }
+
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+
+    // 检测user是否存在
+    std::string userCheckSQL = "SELECT * FROM users WHERE username = '" + user_name + "';";
+    conn->query(userCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " does not exist." << std::endl;
+        return;
+    }  
+
+    // Insert the new group
+    // group_id是自动生成的不用填入
+    std::string groupInsertSQL = "INSERT INTO groups (group_name, group_members) VALUES ('" + group_name + "', '" + members + "');";
+    conn->update(groupInsertSQL);
+
+    std::cout << "Group " << group_name << " created successfully." << std::endl;
+
+}
+
+void handleJoinGroup (ConnectionPool* pool , const std::string& user_name , const std::string& group_name)
+{
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+    // 1.检测user是否存在
+    std::string userCheckSQL = "SELECT * FROM users WHERE username = '" + user_name + "';";
+    conn->query(userCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " does not exist." << std::endl;
+        return;
+    }  
+    // 2.检测group是否存在
+    std::string groupCheckSQL = "SELECT * FROM groups WHERE group_name = '" + group_name + "';";
+    conn->query(groupCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: Group " << group_name << " does not exist." << std::endl;
+        return;
+    }
+
+    // 3.检测user是否已经在group中了
+    std::string membershipCheckSQL = "SELECT * FROM user_groups WHERE user_name = " + user_name +
+                                      " AND group_name = " + group_name + ";";
+    conn->query(membershipCheckSQL);
+
+    if (conn->next()) {
+        std::cerr << "Error: User " << user_name << " is already a member of group " << group_name << "." << std::endl;
+        return;
+    }
+
+    // 4.加入user到群聊
+    std::string joinGroupSQL = "INSERT INTO user_groups (user_name, group_name) VALUES (" +
+                                user_name + ", " + group_name + ");";
+    conn->update(joinGroupSQL);
+
+    std::cout << "User " << user_name << " has joined group " << group_name << " successfully." << std::endl;
+}   
+
+void handleLeaveGroup (ConnectionPool* pool , const std::string& user_name , const std::string& group_name)
+{
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+
+    // 1.检测user是否存在
+    std::string userCheckSQL = "SELECT * FROM users WHERE username = '" + user_name + "';";
+    conn->query(userCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " does not exist." << std::endl;
+        return;
+    }  
+    // 2.检测group是否存在
+    std::string groupCheckSQL = "SELECT * FROM groups WHERE group_name = '" + group_name + "';";
+    conn->query(groupCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: Group " << group_name << " does not exist." << std::endl;
+        return;
+    }
+
+    // 3.检测user是否在group中了
+    std::string membershipCheckSQL = "SELECT * FROM user_groups WHERE user_name = " + user_name +
+                                      " AND group_name = " + group_name + ";";
+    conn->query(membershipCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " is not a member of group " << group_name << "." << std::endl;
+        return;
+    }
+
+    // 4.user_groups移除该user，同时触发器将groups中的该member删除
+    std::string leaveGroupSQL = "DELETE FROM user_groups WHERE user_name = " +
+                                 user_name + " AND group_name = " + group_name + ";";
+    conn->update(leaveGroupSQL);
+
+    std::cout << "User " << user_name << " has left group " << group_name << " successfully." << std::endl;
+
+}
+
+void handleGroupMessage (ConnectionPool* pool , const std::string& user_name , const std::string& group_name , const std::string& time , const std::string& data)
+{
+    std::shared_ptr<MysqlConn> conn = pool->getConnection();
+
+    // 1.检测user是否存在
+    std::string userCheckSQL = "SELECT * FROM users WHERE user_name = '" + user_name + "';";
+    conn->query(userCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " does not exist." << std::endl;
+        return;
+    }  
+    // 2.检测group是否存在
+    std::string groupCheckSQL = "SELECT * FROM groups WHERE group_name = '" + group_name + "';";
+    conn->query(groupCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: Group " << group_name << " does not exist." << std::endl;
+        return;
+    }
+
+    // 3.检测user是否在group中了
+    std::string membershipCheckSQL = "SELECT * FROM user_groups WHERE user_name = " + user_name +
+                                      " AND group_name = " + group_name + ";";
+    conn->query(membershipCheckSQL);
+
+    if (!conn->next()) {
+        std::cerr << "Error: User " << user_name << " is not a member of group " << group_name << "." << std::endl;
+        return;
+    }
+
+     //4.插入群组消息
+    std::string insertMessageSQL = "INSERT INTO chat_record (sender_id, receiver_id, chat_content, chat_time) VALUES ("
+                                   "(SELECT user_id FROM users WHERE username = '" + user_name + "'), "
+                                   "(SELECT group_id FROM groups WHERE group_name = '" + group_name + "'), '"
+                                   + data + "', '" + time + "');";
+
+
+    conn->update(insertMessageSQL);
+
 }
 
 int main() {
