@@ -12,8 +12,8 @@ addApply::addApply(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("好友请求");
     setFixedSize(340,240);
-    this->new_name="张大帅";
-    editMessage(new_name);
+    //先向server端请求是否有好友申请
+
 }
 
 addApply::~addApply()

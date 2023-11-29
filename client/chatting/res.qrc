@@ -8,5 +8,7 @@
         <file>picture/slope.jpg</file>
         <file>picture/underline1.jpg</file>
         <file>picture/wx.jpg</file>
+        <file>picture/one.jpg</file>
+        <file>picture/two.jpg</file>
     </qresource>
 </RCC>

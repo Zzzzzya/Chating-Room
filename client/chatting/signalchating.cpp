@@ -73,7 +73,6 @@ void signalChating::on_preserveBtn_clicked()
 
 }
 
-
 void signalChating::on_clearBtn_clicked()
 {
     ui->textBrowser->clear();
@@ -85,11 +84,8 @@ void signalChating::on_sendBtn_clicked()
 
 }
 
-
 void signalChating::on_exitBtn_clicked()
 {
-//    friendChat *f=new friendChat();
-//    f->show();
     this->hide();
 }
 

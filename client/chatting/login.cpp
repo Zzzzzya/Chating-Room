@@ -13,9 +13,6 @@ login::login(QWidget *parent) :
     ui->setupUi(this);
     setFixedSize(281,505);
     setWindowTitle("凌烟阁聊天室");
-    ui->name->setText("输入账号");
-    ui->password->setText("输入密码");
-
 }
 
 void login::paintEvent(QPaintEvent* ev)
@@ -26,7 +23,7 @@ void login::paintEvent(QPaintEvent* ev)
     painter.setPen(pen);
     //设置背景图
     QPixmap pix;
-    pix.load(":/picture/wx.jpg");
+    pix.load(":/picture/two.jpg");
     painter.drawPixmap(0,0,this->width(),this->height(),pix);
     //底下横线
     painter.drawLine(QPoint(105,500),QPoint(185,500));

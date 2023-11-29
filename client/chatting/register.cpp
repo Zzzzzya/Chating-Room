@@ -14,9 +14,6 @@ Register::Register(QWidget *parent) :
     ui->name->setText("输入账号");
     ui->password->setText("输入密码");
     //获取数有关据库信息
-    UserSql user;
-    user.getAllUserMessage();
-    checkNameIsSame(user.allUserName);
 }
 void Register::paintEvent(QPaintEvent* ev)
 {
