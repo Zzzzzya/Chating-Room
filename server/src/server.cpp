@@ -140,7 +140,7 @@ int getUserId(std::shared_ptr<MysqlConn> conn , const std::string& user_name)
 {
     // std::shared_ptr<MysqlConn> conn = pool->getConnection();
     int id;
-    std::string sql = "select user_id from users where users.username = " + user_name ";";
+    std::string sql = "select user_id from users where users.username = " + user_name +";";
     conn->query(sql);
 
     // 检查用户是否存在
@@ -157,7 +157,7 @@ int getGroupId(std::shared_ptr<MysqlConn> conn, const std::string& group_name)
     // std::shared_ptr<MysqlConn> conn = pool->getConnection();
     int id;
 
-    std::string sql = "SELECT group_id FROM groups WHERE group_name = " + "group_name" + ";";
+    std::string sql = "SELECT group_id FROM groups WHERE group_name = " + group_name + ";";
 
     // Execute the query
     conn->query(sql);
