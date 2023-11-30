@@ -51,6 +51,9 @@ public slots:
     // 发送好友申请
     void sendFriendRequest(const QString &my_name, const QString &friend_account);
     void friendRequestResponse();
+    // 请求好友申请列表
+    void requestFriendApplication(const QString &my_name);
+    void friendApplyResponse();
 
     // 发送好友消息
     void sendFriendMessage(const QString &username, const QString& friendUsername, const QString& content);
@@ -98,6 +101,9 @@ signals:
     // 发送好友申请响应函数
     void friendRequest_Response();
 
+    // 接受好友申请列表响应函数
+    void friendApply_Response();
+
     // 发送好友消息响应函数
     void friendMessage_Response();
 
@@ -110,6 +116,8 @@ signals:
     // 退出群聊响应函数
     void leaveGroup_Response();
 
+    // 好友申请列表已接收到的信号
+    void friendApplyReceived(QJsonArray friendApply);
     // 好友列表已接收到的信号
     void friendListReceived();
     // 发送信号通知 UI 更新好友列表

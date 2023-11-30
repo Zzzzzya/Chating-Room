@@ -24,6 +24,7 @@ MySocket::MySocket(QObject *parent) : QObject(parent)
     connect(this, &MySocket::addFriend_Response, this, &MySocket::addFriendResponse);
     connect(this, &MySocket::deleteFriend_Response, this, &MySocket::deleteFriendResponse);
     connect(this, &MySocket::friendRequest_Response, this, &MySocket::friendRequestResponse);
+    connect(this, &MySocket::friendApply_Response, this, &MySocket::friendApplyResponse);
     connect(this, &MySocket::friendMessage_Response, this, &MySocket::friendMessageResponse);
     connect(this, &MySocket::groupCreate_Response, this, &MySocket::groupCreateReponse);
     connect(this, &MySocket::joinGroup_Response, this, &MySocket::joinGroupReponse);
@@ -360,6 +361,48 @@ void MySocket::friendRequestResponse()
         qDebug() << "申请好友失败! ";
     }
 
+}
+
+void MySocket::requestFriendApplication(const QString &my_name)
+{
+    QJsonObject requestContent;
+    requestContent["username"] = my_name;       // 请求好友列表的人
+
+    QJsonObject messageObject;
+    messageObject["type"] = "request";
+    messageObject["subtype"] = "friend_Apply_request";
+    messageObject["content"] = requestContent;
+
+    // 将消息对象转为JSON文档
+    QJsonDocument doc(messageObject);
+
+    // 发送消息到服务器
+    sendMessagetoServer(doc.toJson());
+
+    // 发送信号以调用服务器响应函数
+    emit friendApply_Response();
+}
+
+void MySocket::friendApplyResponse()
+{
+    const QJsonObject& jsonObject = receiveMessageFromServer();
+
+    QString type = jsonObject["type"].toString();
+    QString subtype = jsonObject["subtype"].toString();
+    bool success = jsonObject["success"].toBool();
+
+    if (success)
+    {
+        // 如果处理成功，获取好友申请列表
+        QJsonArray friendApply = jsonObject["friend_Apply_List"].toArray();
+
+        // 发送信号将好友申请列表传递给UI
+        emit friendApplyReceived(friendApply);
+    }
+    else
+    {
+        qDebug() << "好友申请处理失败! ";
+    }
 }
 
 void MySocket::sendFriendMessage(const QString &username, const QString &friendUsername, const QString &content)
