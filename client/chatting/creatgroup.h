@@ -18,7 +18,7 @@ public:
     void showMessage(QVector<QString> &userFriend);
     void showNum(int cnt);
     void clickedName(int cnt);
-    QVector<QString>choosedName;
+    QStringList choosedName;
     QVector<QListWidgetItem*>selectedItem;
     ~creatGroup();
 
