@@ -5,6 +5,8 @@
 #include<QCheckBox>
 #include "craetgroupname.h"
 
+extern UserSql *user;
+
 creatGroup::creatGroup(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::creatGroup)
@@ -12,9 +14,7 @@ creatGroup::creatGroup(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("创建群聊");
     setFixedSize(250,350);
-    UserSql user;
-    user.getUserFriendMessage();
-    showMessage(user.userFriend);
+    showMessage(user->userFriend);
 }
 
 creatGroup::~creatGroup()

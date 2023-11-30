@@ -1,28 +1,34 @@
 #include "groupchatting.h"
 #include "ui_groupchatting.h"
 #include<QColorDialog>
+#include"mysocket.h"
 #include "usersql.h"
+
+extern MySocket *mysocket;
+extern UserSql *user;
 
 groupChatting::groupChatting(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::groupChatting)
 {
     ui->setupUi(this);
-    UserSql user;
-    user.getUserGroupMessage();
-    user.getUserFriendMessage();
-    for(int i=0;i<user.groupName.size();i++)
-    {
-        if(user.groupName[i]==windowTitle())
-        {
-            setTableWidget(user.groupNumberName[i],user.userFriend,user.friendIsOnline);
-        }
-    }
+    connect(mysocket,&MySocket::groupMembersCountUpdated,this,&groupChatting::getMessage);
+    setTableWidget(user->cnt,user->groupNumberName,user->friendIsOnline,user->userFriend);
 }
 
 groupChatting::~groupChatting()
 {
     delete ui;
+}
+
+void groupChatting::getMessage(const QJsonArray &groupMessage)
+{
+    user->cnt=groupMessage.first().toInt();
+    user->groupNumberName.resize(user->cnt);
+    for(int i=1;i<groupMessage.size();i++)
+    {
+        user->groupNumberName[i-1]=groupMessage[i].toString();
+    }
 }
 
 void groupChatting::on_fontComboBox_currentFontChanged(const QFont &f)
@@ -99,12 +105,12 @@ void groupChatting::on_exitBtn_clicked()
     this->hide();
 }
 
-void groupChatting::setTableWidget(QVector<QString>groupNumberName,QVector<QString>userFriend,QVector<int>friendIsOnline)
+void groupChatting::setTableWidget(int cnt,QVector<QString>groupNumberName,QVector<int>&friendIsOnline,QVector<QString>&userFriend)
 {
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"成员"<<"在线情况");
-    ui->tableWidget->setRowCount(groupNumberName.size());
-    for(int i=0;i<groupNumberName.size();i++)
+    ui->tableWidget->setRowCount(cnt);
+    for(int i=0;i<cnt;i++)
     {
         for(int j=0;j<2;j++)
         {
@@ -114,7 +120,7 @@ void groupChatting::setTableWidget(QVector<QString>groupNumberName,QVector<QStri
             }
             if(j==1)
             {
-                for(int k=0;k<userFriend.size();k++)
+                for(int k=0;k<friendIsOnline.size();k++)
                 {
                     if(groupNumberName[i]==userFriend[k])
                     {

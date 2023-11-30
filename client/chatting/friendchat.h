@@ -20,6 +20,8 @@ public:
     ~friendChat();
 
 private slots:
+    void getMessage(const QJsonArray &friendApply);
+
     void on_friendBtn_clicked();
 
     void on_groupBtn_clicked();

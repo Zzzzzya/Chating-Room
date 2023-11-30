@@ -4,9 +4,12 @@
 #include "addfrient.h"
 #include "creatgroup.h"
 #include "addapply.h"
-#include "usersql.h"
 #include "groupchatting.h"
+#include"mysocket.h"
+#include "usersql.h"
 
+extern MySocket *mysocket;
+extern UserSql *user;
 
 groupchat::groupchat(QWidget *parent) :
     QWidget(parent),
@@ -16,14 +19,22 @@ groupchat::groupchat(QWidget *parent) :
     setWindowTitle("群聊");
     setFixedSize(250,410);
     //获取数有关据库信息
-    UserSql user;
-    user.getUserGroupMessage();
-    showOnlineNumber(user.groupName);
+    connect(mysocket,&MySocket::groupListUpdated,this,&groupchat::getGroupMessage);
+    showOnlineNumber(user->groupName);
 }
 
 groupchat::~groupchat()
 {
     delete ui;
+}
+
+void groupchat::getGroupMessage(const QJsonArray &groupMessage)
+{
+    user->groupName.resize(groupMessage.size());
+    for(int i=0;i<groupMessage.size();i++)
+    {
+        user->groupName[i]=groupMessage[i].toString();
+    }
 }
 
 //跳转到friendchat界面

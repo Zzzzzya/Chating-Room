@@ -1,8 +1,10 @@
 #include "login.h"
 #include "mysocket.h"
+#include "usersql.h"
 #include <QApplication>
 
 MySocket *mysocket;
+UserSql *user;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

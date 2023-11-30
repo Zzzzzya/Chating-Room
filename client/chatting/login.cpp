@@ -5,6 +5,9 @@
 #include<QFont>
 #include "friendchat.h"
 #include "register.h"
+#include "usersql.h"
+
+extern UserSql *user;
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -43,6 +46,7 @@ login::~login()
 //跳转到friendchat界面
 void login::on_loginBtn_clicked()
 {
+    user->userName=ui->name->text();
     friendChat *f=new friendChat();
     f->show();
     this->hide();

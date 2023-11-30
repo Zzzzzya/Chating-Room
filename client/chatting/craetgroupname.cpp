@@ -1,7 +1,11 @@
 #include "craetgroupname.h"
 #include "ui_craetgroupname.h"
 #include "creatsuc.h"
+#include"mysocket.h"
+#include "usersql.h"
 
+extern MySocket *mysocket;
+extern UserSql *user;
 
 craetGroupName::craetGroupName(QWidget *parent, QStringList name) :
     QWidget(parent),
@@ -11,7 +15,7 @@ craetGroupName::craetGroupName(QWidget *parent, QStringList name) :
     this->choosedName=name;
     qDebug()<<this->choosedName.size();
     setWindowTitle("群昵称");
-    this->mysock=new MySocket;
+    connect(this, &craetGroupName::confirmBtnClicked, mysocket, &MySocket::createGroup);
 }
 
 craetGroupName::~craetGroupName()
@@ -21,8 +25,7 @@ craetGroupName::~craetGroupName()
 
 void craetGroupName::on_confirmBtn_clicked()
 {
-    //将群昵称&群成员保存到数据库
-    this->mysock->createGroup(mysock->m_username,ui->lineEdit->text(),this->choosedName);
+    emit confirmBtnClicked(user->userName,ui->lineEdit->text(),choosedName);
     creatSuc *cr=new creatSuc();
     cr->show();
     this->hide();

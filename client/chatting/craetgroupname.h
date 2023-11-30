@@ -1,6 +1,5 @@
 #ifndef CRAETGROUPNAME_H
 #define CRAETGROUPNAME_H
-#include"mysocket.h"
 
 #include <QWidget>
 
@@ -17,10 +16,12 @@ public:
     ~craetGroupName();
 public:
     QStringList choosedName;
-    MySocket *mysock;
 
 private slots:
     void on_confirmBtn_clicked();
+
+signals:
+    void confirmBtnClicked(const QString &my_name,const QString &groupName,const QStringList &name);
 
 private:
     Ui::craetGroupName *ui;

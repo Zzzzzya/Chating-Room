@@ -4,6 +4,8 @@
 #include "register_success.h"
 #include "usersql.h"
 
+extern UserSql *user;
+
 Register::Register(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Register)
@@ -43,6 +45,7 @@ Register::~Register()
 //跳转到register_success界面&&将信息存到数据库
 void Register::on_registerBtn_clicked()
 {
+    user->userName=ui->name->text();
     register_success *rc=new register_success();
     rc->show();
     this->hide();

@@ -9,12 +9,10 @@ addfrient::addfrient(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::addfrient)
 {
-
     ui->setupUi(this);
     setWindowTitle("添加好友");
     setFixedSize(340,240);
     connect(this, &addfrient::confirmButtonClicked, mysocket, &MySocket::sendFriendRequest);
-
 }
 
 addfrient::~addfrient()

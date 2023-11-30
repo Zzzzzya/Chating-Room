@@ -5,12 +5,17 @@
 #include "addfrient.h"
 #include "creatgroup.h"
 #include "addapply.h"
-#include "usersql.h"
 #include<QToolButton>
 #include<QDebug>
 #include<QListWidget>
 #include <QScrollArea>
 #include "signalchating.h"
+#include"mysocket.h"
+#include "usersql.h"
+
+
+extern MySocket *mysocket;
+extern UserSql *user;
 
 friendChat::friendChat(QWidget *parent) :
     QWidget(parent),
@@ -20,9 +25,8 @@ friendChat::friendChat(QWidget *parent) :
     setWindowTitle("好友");
     setFixedSize(250,410);
     //获取数有关据库信息
-    UserSql user;
-    user.getUserFriendMessage();
-    showOnlineNumber(user.userFriend,user.friendIsOnline);
+    connect(mysocket,&MySocket::friendListUpdated,this,&friendChat::getMessage);
+    showOnlineNumber(user->userFriend,user->friendIsOnline);
 }
 
 friendChat::~friendChat()
@@ -36,6 +40,23 @@ void friendChat::paintEvent(QPaintEvent* )
     QPen pen;
     pen.setWidth(3);
     painter.setPen(pen);
+}
+
+void friendChat::getMessage(const QJsonArray &friendMessage)
+{
+    user->userFriend.resize(friendMessage.size()/2);
+    user->friendIsOnline.resize(friendMessage.size()/2);
+    for(int i=0;i<friendMessage.size();i++)
+    {
+        if(i%2==0)
+        {
+            user->userFriend[i/2]=friendMessage[i].toString();
+        }
+        else
+        {
+            user->friendIsOnline[i/2+1]=friendMessage[i].toInt();
+        }
+    }
 }
 
 //点击相当于没动,不用实现
