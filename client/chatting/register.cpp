@@ -3,8 +3,10 @@
 #include<QPainter>
 #include "register_success.h"
 #include "usersql.h"
+#include "mysocket.h"
 
 extern UserSql *user;
+extern MySocket *mysocket;
 
 Register::Register(QWidget *parent) :
     QWidget(parent),
@@ -13,11 +15,8 @@ Register::Register(QWidget *parent) :
     ui->setupUi(this);
     setFixedSize(281,505);
     setWindowTitle("注册");
-    ui->name->setText("输入账号");
-    ui->password->setText("输入密码");
-    //获取数有关据库信息
 }
-void Register::paintEvent(QPaintEvent* ev)
+void Register::paintEvent(QPaintEvent* )
 {
     QPainter painter(this);
     QPen pen;
@@ -25,7 +24,7 @@ void Register::paintEvent(QPaintEvent* ev)
     painter.setPen(pen);
     //设置背景图
     QPixmap pix;
-    pix.load(":/picture/wx.jpg");
+    pix.load(":/picture/two.jpg");
     painter.drawPixmap(0,0,this->width(),this->height(),pix);
     //底下横线
     painter.drawLine(QPoint(105,500),QPoint(185,500));
@@ -46,6 +45,7 @@ Register::~Register()
 void Register::on_registerBtn_clicked()
 {
     user->userName=ui->name->text();
+    mysocket->registerUser(ui->name->text(),ui->password->text());
     register_success *rc=new register_success();
     rc->show();
     this->hide();

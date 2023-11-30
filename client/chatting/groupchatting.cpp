@@ -7,13 +7,16 @@
 extern MySocket *mysocket;
 extern UserSql *user;
 
-groupChatting::groupChatting(QWidget *parent) :
+groupChatting::groupChatting(QWidget *parent,QString groupName) :
     QWidget(parent),
     ui(new Ui::groupChatting)
 {
     ui->setupUi(this);
+    this->GName=groupName;
+    mysocket->requestGroupMemberCount(this->GName);
     connect(mysocket,&MySocket::groupMembersCountUpdated,this,&groupChatting::getMessage);
     setTableWidget(user->cnt,user->groupNumberName,user->friendIsOnline,user->userFriend);
+    connect(mysocket,&MySocket::groupMessageReceived,this,&groupChatting::showMessage);
 }
 
 groupChatting::~groupChatting()
@@ -21,13 +24,19 @@ groupChatting::~groupChatting()
     delete ui;
 }
 
-void groupChatting::getMessage(const QJsonArray &groupMessage)
+void groupChatting::showMessage(const QString& message)
 {
-    user->cnt=groupMessage.first().toInt();
+    ui->textBrowser->setText(message);
+}
+
+void groupChatting::getMessage(const QJsonObject &groupMessage)
+{
+    user->cnt=groupMessage["count"].toInt();
+    QJsonArray arr=groupMessage["members"].toArray();
     user->groupNumberName.resize(user->cnt);
-    for(int i=1;i<groupMessage.size();i++)
+    for(int i=0;i<arr.size();i++)
     {
-        user->groupNumberName[i-1]=groupMessage[i].toString();
+        user->groupNumberName[i-1]=arr[i].toString();
     }
 }
 
@@ -97,7 +106,7 @@ void groupChatting::on_clearBtn_clicked()
 //要用到socket,先不写
 void groupChatting::on_sendBtn_clicked()
 {
-
+    mysocket->sendGroupMessage(this->GName,user->userName,ui->textEdit->toPlainText());
 }
 
 void groupChatting::on_exitBtn_clicked()

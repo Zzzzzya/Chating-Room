@@ -12,12 +12,15 @@ class signalChating : public QWidget
     Q_OBJECT
 
 public:
-    explicit signalChating(QWidget *parent = nullptr);
+    explicit signalChating(QWidget *parent = nullptr,QString name="");
+    QString Name;
     ~signalChating();
 private:
     QColor color;
 
 private slots:
+    void showMessage(const QString& message);
+
     void on_fontComboBox_currentFontChanged(const QFont &f);
 
     void on_comboBox_currentTextChanged(const QString &arg1);

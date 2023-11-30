@@ -2,18 +2,30 @@
 #include "ui_signalchating.h"
 #include<QColorDialog>
 #include "friendchat.h"
+#include"mysocket.h"
+#include "usersql.h"
 
-signalChating::signalChating(QWidget *parent) :
+extern MySocket *mysocket;
+extern UserSql *user;
+
+signalChating::signalChating(QWidget *parent,QString name) :
     QWidget(parent),
     ui(new Ui::signalChating)
 {
     ui->setupUi(this);
+    this->Name=name;
     setFixedSize(730,450);
+    connect(mysocket,&MySocket::chatMessageReceived,this,&signalChating::showMessage);
 }
 
 signalChating::~signalChating()
 {
     delete ui;
+}
+
+void signalChating::showMessage(const QString& message)
+{
+    ui->textBrowser->setText(message);
 }
 
 void signalChating::on_fontComboBox_currentFontChanged(const QFont &f)
@@ -81,7 +93,7 @@ void signalChating::on_clearBtn_clicked()
 //要用到socket
 void signalChating::on_sendBtn_clicked()
 {
-
+    mysocket->sendFriendMessage(user->userName,this->Name,ui->textEdit->toPlainText());
 }
 
 void signalChating::on_exitBtn_clicked()

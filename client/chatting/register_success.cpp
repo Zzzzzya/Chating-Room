@@ -12,7 +12,7 @@ register_success::register_success(QWidget *parent) :
     setFixedSize(281,505);
 }
 
-void register_success:: paintEvent(QPaintEvent* ev)
+void register_success:: paintEvent(QPaintEvent* )
 {
     QPainter painter(this);
     QPen pen;

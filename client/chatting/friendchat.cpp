@@ -24,6 +24,7 @@ friendChat::friendChat(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("好友");
     setFixedSize(250,410);
+    mysocket->requestFriendList(user->userName);
     //获取数有关据库信息
     connect(mysocket,&MySocket::friendListUpdated,this,&friendChat::getMessage);
     showOnlineNumber(user->userFriend,user->friendIsOnline);
@@ -121,7 +122,7 @@ void friendChat::showSignalChatting()
     connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
     {
         QListWidgetItem *selectedItem = ui->listWidget->currentItem();
-        signalChating *s=new signalChating();
+        signalChating *s=new signalChating(nullptr,selectedItem->text());
         s->setWindowIcon(selectedItem->icon());
         s->setWindowTitle(selectedItem->text());
         s->show();

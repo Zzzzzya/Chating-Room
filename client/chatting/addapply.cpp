@@ -2,8 +2,10 @@
 #include "ui_addapply.h"
 #include "friendchat.h"
 #include "mysocket.h"
+#include "usersql.h"
 
 extern MySocket *mysocket;
+extern UserSql *user;
 
 addApply::addApply(QWidget *parent) :
     QWidget(parent),
@@ -14,7 +16,7 @@ addApply::addApply(QWidget *parent) :
     setFixedSize(340,240);
     connect(mysocket, &MySocket::friendApplyReceived, this, &addApply::handleFriendRequests);
     //先向server端请求是否有好友申请
-    mysocket->requestFriendApplication();   // 括号里是当前用户的username
+    mysocket->requestFriendApplication(user->userName);   // 括号里是当前用户的username
 }
 
 void addApply::handleFriendRequests(const QJsonArray &friendApply)
@@ -59,7 +61,7 @@ void addApply::on_cancelBtn_clicked()
 //跳转到friendchat界面&&将信息存到数据库
 void addApply::on_confirmBtn_clicked()          // 同意后首先清除该请求
 {
-    mysocket->addFriend(, this->new_name);      // 参数：当前用户名，框内申请者的用户名
+    mysocket->addFriend(user->userName,this->new_name);      // 参数：当前用户名，框内申请者的用户名
 
 }
 

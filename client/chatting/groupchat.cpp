@@ -18,6 +18,7 @@ groupchat::groupchat(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("群聊");
     setFixedSize(250,410);
+    mysocket->requestGroupList(user->userName);
     //获取数有关据库信息
     connect(mysocket,&MySocket::groupListUpdated,this,&groupchat::getGroupMessage);
     showOnlineNumber(user->groupName);
@@ -94,7 +95,7 @@ void groupchat::showGroupChatting()
     connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
     {
         QListWidgetItem *selectedItem = ui->listWidget->currentItem();
-        groupChatting *g=new groupChatting();
+        groupChatting *g=new groupChatting(nullptr,selectedItem->text());
         g->setWindowIcon(selectedItem->icon());
         g->setWindowTitle(selectedItem->text());
         g->show();

@@ -12,15 +12,16 @@ class groupChatting : public QWidget
     Q_OBJECT
 
 public:
-    explicit groupChatting(QWidget *parent = nullptr);
+    explicit groupChatting(QWidget *parent = nullptr,QString groupName="");
     void setTableWidget(int cnt,QVector<QString>groupNumberName,QVector<int>&friendIsOnline,QVector<QString>&userFriend);
     QString GName;
+    void showMessage(const QString& message);
     ~groupChatting();
 private:
     QColor color;
 
 private slots:
-    void getMessage(const QJsonArray &friendApply);
+    void getMessage(const QJsonObject &friendApply);
 
     void on_fontComboBox_currentFontChanged(const QFont &f);
 

@@ -6,8 +6,10 @@
 #include "friendchat.h"
 #include "register.h"
 #include "usersql.h"
+#include"mysocket.h"
 
 extern UserSql *user;
+extern MySocket *mysocket;
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -18,7 +20,7 @@ login::login(QWidget *parent) :
     setWindowTitle("凌烟阁聊天室");
 }
 
-void login::paintEvent(QPaintEvent* ev)
+void login::paintEvent(QPaintEvent* )
 {
     QPainter painter(this);
     QPen pen;
@@ -55,6 +57,7 @@ void login::on_loginBtn_clicked()
 //跳转到register界面
 void login::on_registerBtn_clicked()
 {
+    mysocket->loginIn(ui->name->text(),ui->password->text());
     Register *r=new Register();
     r->show();
     this->hide();
