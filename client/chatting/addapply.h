@@ -15,7 +15,8 @@ public:
     explicit addApply(QWidget *parent = nullptr);
     void editMessage(QString &name);
     ~addApply();
-
+public slots:
+    void handleFriendRequests(const QJsonArray &friendApply);
 private slots:
     void on_backBtn_clicked();
 
