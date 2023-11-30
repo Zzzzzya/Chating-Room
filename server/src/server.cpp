@@ -76,29 +76,44 @@ void handleJsonRequest (const std::string& json,int& cfd)
         }
         std::string subtype = root["subtype"].asString();
        
-	if (type =="request") {
+if (type =="request") {
 		if (subtype =="login") {
-            std::string username = root["username"].asString();
-            std::string password = root["password"].asString();
-            handleLogin (pool,username,password,subtype,cfd);
+        std::string username = root["username"].asString();
+        std::string password = root["password"].asString();
+    /1  handleLogin (pool,username,password);
         }
         else if (subtype == "register"){
-            //以下函数同login一样的格式 获取对应的username 
-            handleResister ();
+        //以下函数同login一样的格式 获取对应的username 
+        //insert        
+        std::string username = root["username"].asString();
+        std::string password = root["password"].asString();
+        std::string email = root["email"].asString();
+        std::string phone = root["phone"].asString();
+        std::string avatar = root["avatar"].asString();
+    /2  handleResister (pool,username,password,email,phone,avator);
 		}
 		else if (subtype =="add friend") {
-		    handleaddFriend ();
+        //select insert
+        std::string user_name = root["user_name"].asString();
+        std::string friend_name = root["friend_name"].asString();
+    /3  handleAddfriend (pool,user_name,friend_name);
 		}		
 		else if (subtype =="del friend") {
-		    handleDeleteFriend ();
+        //select del
+        std::string user_name = root["user_name"].asString();
+        std::string friend_name = root["friend_name"].asString();
+	/4	handleDeleteFriend (pool,user_name, friend_name);
 		}
-		else if (subtype == "app_friend") {
-		    handleappfriend ();
+		else if (subtype == "apply_friend") {
+        // select insert 
+        std::string applicant = root["applicant"].asString();
+        std::string friend_account = root["friend_account"].asString();
+	/5	handleappfriend (pool,applicant,friend_account);
 		}
-		else if (subtype == "get_friend list") {
-		    handleGetRriendList ();
-		}
-
+		else if (subtype == "get_friend_list") {
+        // select  
+        std::string username = root["username"].asString();
+    /6	handleGetRriendList (pool,username);
         /*
             XiaoLin's Part
         */
@@ -327,6 +342,93 @@ void handleGroupMessage (ConnectionPool* pool , const std::string& user_name , c
     conn->update(insertMessageSQL);
 
 }
+
+
+
+
+//lian
+/1
+void  handleLogin (ConnectionPool* pool , const std::string& username , const std::string& password){
+        std::string username = root["username"].asString();
+        std::string password = root["password"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+        // 查询数据库以验证用户
+        std::string sql = "SELECT COUNT(*) FROM users WHERE username = ? AND password = ?";
+        std::vector<std::string> params = {username, password};
+        std::vector<std::vector<std::string>> result = conn.query(sql, params);
+        bool login_successful = !result.empty() && result[0][0] == "1";
+
+        // 返回登录结果给客户端
+        Json::Value response;
+        response["type"] = "response";
+        response["subtype"] = "login";
+        response["success"] = login_successful;
+    }
+/2
+void handleResister (ConnectionPool* pool , const std::string& username , const std::string& password,const std::string& email ，const std::string& phone, const std::string& avator ){
+        std::string username = root["username"].asString();
+        std::string password = root["password"].asString();
+        std::string email = root["email"].asString();
+        std::string phone = root["phone"].asString();
+        std::string avatar = root["avatar"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+
+        // 使用预处理语句进行插入，避免 SQL 注入
+        std::string sql = "INSERT INTO users (username, password, email, phone, avatar) VALUES (?, ?, ?, ?, ?)";
+        bool flag = conn.update(sql, {username, password, email, phone, avatar});
+     }
+/3     
+void handleAddfriend (ConnectionPool* pool , const std::string& user_name , const std::string& friend_name){
+        //select insert
+        std::string user_name = root["user_name"].asString();
+        std::string friend_name = root["friend_name"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+        // 向关联表中插入好友关系
+        std::string sql = "INSERT INTO user_friends (user_name, friend_name) VALUES (?, ?)";
+        bool flag = conn.update(sql, {user_name, friend_name});}
+/4
+void handleDeleteFriend (ConnectionPool* pool , const std::string& user_name , const std::string& friend_name){
+        //select del
+        std::string user_name = root["user_name"].asString();
+        std::string friend_name = root["friend_name"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+        // 从关联表中删除好友关系
+        std::string sql = "DELETE FROM user_friends WHERE user_name = ? AND friend_name = ?";
+        bool flag = conn.update(sql, {user_name, friend_name});
+    } 
+/5
+void handleappfriend (ConnectionPool* pool , const std::string& applicant , const std::string& friend_account){
+        // select insert 
+        std::string applicant = root["applicant"].asString();
+        std::string friend_account = root["friend_account"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+        // 向关联表中插入好友申请关系
+        std::string sql = "INSERT INTO friend_requests (applicant, friend_account) VALUES (?, ?)";
+        bool flag = conn.update(sql, {applicant, friend_account});
+    }
+/6  
+void handleGetRriendList (ConnectionPool* pool , const std::string& username ){
+        // select  
+        std::string username = root["username"].asString();
+        MysqlConn conn;
+        conn.connect(username, password, subtype, cfd);
+        // 查询用户的好友列表
+        std::string sql = "SELECT friend_name FROM user_friends WHERE user_name = ?";
+        std::vector<std::string> friend_list = conn.query(sql, {username});
+    }
+
+
+
+
+
+
+
+
 
 int main() {
     int listen_fd, conn_fd, epoll_fd, num_events, i;
