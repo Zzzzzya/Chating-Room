@@ -75,6 +75,7 @@ QJsonObject &MySocket::receiveMessageFromServer()
             return emptyObject;
     }else{
             qDebug() << "接收成功!";
+            qDebug()<<buffer.size();
     }
 
     QJsonDocument doc = QJsonDocument::fromJson(buffer);
@@ -95,8 +96,8 @@ bool MySocket::connectToServer()
 {
     sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(8000);
-    serv_addr.sin_addr.S_un.S_addr = inet_addr("111.229.188.220");
+    serv_addr.sin_port = htons(8087);
+    serv_addr.sin_addr.S_un.S_addr = inet_addr("192.168.1.109");
     if (serv_addr.sin_addr.S_un.S_addr == INADDR_NONE) {
         qDebug() << "无效的IP地址";
         return false;

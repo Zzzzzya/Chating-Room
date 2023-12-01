@@ -49,6 +49,7 @@ login::~login()
 void login::on_loginBtn_clicked()
 {
     user->userName=ui->name->text();
+    mysocket->loginIn(ui->name->text(),ui->password->text());
     friendChat *f=new friendChat();
     f->show();
     this->hide();
@@ -57,7 +58,6 @@ void login::on_loginBtn_clicked()
 //跳转到register界面
 void login::on_registerBtn_clicked()
 {
-    mysocket->loginIn(ui->name->text(),ui->password->text());
     Register *r=new Register();
     r->show();
     this->hide();

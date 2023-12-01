@@ -8,7 +8,7 @@ register_success::register_success(QWidget *parent) :
     ui(new Ui::register_success)
 {
     ui->setupUi(this);
-    setWindowTitle("结果");
+    setWindowTitle("恭喜注册成功");
     setFixedSize(281,505);
 }
 

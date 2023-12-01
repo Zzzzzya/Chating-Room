@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
     mysocket = new MySocket(nullptr);
     mysocket->connectToServer();
 
+    user=new UserSql();
+
 
     login *l=new login();
     l->show();
@@ -20,6 +22,7 @@ int main(int argc, char *argv[])
 
     // 在应用程序退出前,释放资源和关闭网络连接
     delete mysocket;
+    delete user;
 
     return result;
 }
