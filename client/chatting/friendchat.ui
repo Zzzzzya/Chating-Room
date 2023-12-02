@@ -94,7 +94,7 @@
     <string>好友申请</string>
    </property>
   </widget>
-  <widget class="QListWidget" name="listWidget">
+  <widget class="QListWidget" name="friendListWidget">
    <property name="geometry">
     <rect>
      <x>0</x>

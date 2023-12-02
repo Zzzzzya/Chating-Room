@@ -20,7 +20,7 @@ public:
     ~friendChat();
 
 private slots:
-    void getMessage(const QJsonArray &friendApply);
+    void updateFriendListWidget(QList<QPair<QString, int>> friendList);
 
     void on_friendBtn_clicked();
 

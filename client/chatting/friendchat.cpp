@@ -26,7 +26,7 @@ friendChat::friendChat(QWidget *parent) :
     setFixedSize(250,410);
     mysocket->requestFriendList(user->userName);
     //获取数有关据库信息
-    connect(mysocket,&MySocket::friendListUpdated,this,&friendChat::getMessage);
+    connect(mysocket,&MySocket::friendListUpdated,this,&friendChat::updateFriendListWidget);
     showOnlineNumber(user->userFriend,user->friendIsOnline);
 }
 
@@ -43,20 +43,24 @@ void friendChat::paintEvent(QPaintEvent* )
     painter.setPen(pen);
 }
 
-void friendChat::getMessage(const QJsonArray &friendMessage)
+void friendChat::updateFriendListWidget(QList<QPair<QString, int>> friendList)
 {
-    user->userFriend.resize(friendMessage.size()/2);
-    user->friendIsOnline.resize(friendMessage.size()/2);
-    for(int i=0;i<friendMessage.size();i++)
-    {
-        if(i%2==0)
-        {
-            user->userFriend[i/2]=friendMessage[i].toString();
-        }
-        else
-        {
-            user->friendIsOnline[i/2+1]=friendMessage[i].toInt();
-        }
+    // 先清空 QListWidget
+    ui->friendListWidget->clear();
+
+    // 遍历 friendList，并将其中的好友信息添加到 QListWidget 中
+    for (const auto& friendInfo : friendList) {
+        QString friendName = friendInfo.first;
+        int isOnline = friendInfo.second;
+
+        // 根据在线状态，设置显示的文本
+        QString statusText = (isOnline == 1) ? "在线" : "离线";
+
+        // 创建 QListWidgetItem 并设置显示文本
+        QListWidgetItem* item = new QListWidgetItem(friendName + " - " + statusText);
+
+        // 将 item 添加到 QListWidget 中
+        ui->friendListWidget->addItem(item);
     }
 }
 
@@ -107,10 +111,10 @@ void friendChat::showOnlineNumber(QVector<QString> &userFriend,QVector<int>&frie
         if(friendIsOnline[i]==1)
         {
             cnt++;
-            ui->listWidget->setIconSize(QSize(30,30));
+            ui->friendListWidget->setIconSize(QSize(30,30));
             QListWidgetItem *item =new QListWidgetItem(QPixmap(":/picture/11.gif"),userFriend[i]);
             item->setSizeHint(QSize(250,40));
-            ui->listWidget->addItem(item);
+            ui->friendListWidget->addItem(item);
         }
     }
     QString str=QString("%1/%2").arg(cnt).arg(userFriend.size());
@@ -119,9 +123,9 @@ void friendChat::showOnlineNumber(QVector<QString> &userFriend,QVector<int>&frie
 
 void friendChat::showSignalChatting()
 {
-    connect(ui->listWidget,&QListWidget::itemPressed,this,[=]()
+    connect(ui->friendListWidget,&QListWidget::itemPressed,this,[=]()
     {
-        QListWidgetItem *selectedItem = ui->listWidget->currentItem();
+        QListWidgetItem *selectedItem = ui->friendListWidget->currentItem();
         signalChating *s=new signalChating(nullptr,selectedItem->text());
         s->setWindowIcon(selectedItem->icon());
         s->setWindowTitle(selectedItem->text());
