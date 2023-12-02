@@ -145,7 +145,7 @@ private:
     QByteArray buffer;  // 缓存
 
     bool sendMessagetoServer(const QByteArray &message);
-    QJsonObject& receiveMessageFromServer();
+    QJsonObject receiveMessageFromServer();
 };
 
 #endif // MYSOCKET_H

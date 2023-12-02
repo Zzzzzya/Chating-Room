@@ -59,10 +59,18 @@ bool MySocket::sendMessagetoServer(const QByteArray& message)
             return false;
     }
     qDebug() << "发送成功！";
+
+    // 如果发送成功，则尝试接收服务器的响应
+    QJsonObject response = receiveMessageFromServer();
+    if (response.isEmpty()) {
+        // 处理接收消息失败的情况
+        qDebug() << "接收服务器响应失败";
+        return false;
+    }
     return true;
 }
 
-QJsonObject &MySocket::receiveMessageFromServer()
+QJsonObject MySocket::receiveMessageFromServer()
 {
     buffer.clear(); // 清空缓存区
     int ret = recv(socketfd, buffer.data(), buffer.size(), 0);
@@ -70,26 +78,24 @@ QJsonObject &MySocket::receiveMessageFromServer()
             int error = WSAGetLastError();
             qDebug() << "接收失败: " << error;
 
-            // 返回一个空的QJsonObject对象
-            static QJsonObject emptyObject;
-            return emptyObject;
+            // 返回一个动态分配的空的QJsonObject对象
+            return QJsonObject();
     }else{
             qDebug() << "接收成功!";
             qDebug()<<buffer.size();
     }
 
+    QJsonParseError jsonError;
     QJsonDocument doc = QJsonDocument::fromJson(buffer);
-    if (doc.isNull()) {
-            qDebug() << "解析JSON失败";
+    if (jsonError.error != QJsonParseError::NoError) {
+        qDebug() << "解析JSON失败" << jsonError.errorString();
 
-            // 返回一个空的QJsonObject对象
-            static QJsonObject emptyObject;
-            return emptyObject;
+        // 返回一个动态分配的空的QJsonObject对象
+        return QJsonObject();
     }
 
     // 返回解析得到的JSON对象
-    static QJsonObject jsonObject = doc.object();
-    return jsonObject;
+    return doc.object();
 }
 
 bool MySocket::connectToServer()
