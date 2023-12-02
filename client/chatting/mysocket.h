@@ -12,6 +12,7 @@
 #include <QJsonArray>
 #include <QDateTime>
 #include <QList>
+#include <QPair>
 
 class MySocket : public QObject
 {
@@ -121,12 +122,12 @@ signals:
     // 好友列表已接收到的信号
     void friendListReceived();
     // 发送信号通知 UI 更新好友列表
-    void friendListUpdated(QJsonArray friendList);
+    void friendListUpdated(QList<QPair<QString, int>> friendList);
 
     // 群组列表已接收到的信号
     void groupListReceived();
     // 发送信号通知 UI 更新群聊列表
-    void groupListUpdated(QJsonArray friendList);
+    void groupListUpdated(QJsonArray GroupList);
     // 当前群聊的人数和成员已收到的信号
     void groupMembersCountReceived();
     // 通知ui更新当前群聊的人数和成员

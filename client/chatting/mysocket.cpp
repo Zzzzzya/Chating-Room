@@ -102,8 +102,8 @@ bool MySocket::connectToServer()
 {
     sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(8087);
-    serv_addr.sin_addr.S_un.S_addr = inet_addr("192.168.1.109");
+    serv_addr.sin_port = htons(8080);
+    serv_addr.sin_addr.S_un.S_addr = inet_addr("192.168.21.1");
     if (serv_addr.sin_addr.S_un.S_addr == INADDR_NONE) {
         qDebug() << "无效的IP地址";
         return false;
@@ -234,11 +234,23 @@ void MySocket::getFriendListResponse()
 
     // 需要展现在ui上的数据
     QJsonArray message = jsonObject["message"].toArray();
-    // 确保成功获取且一维数组长度是偶数（每两个元素表示一个好友的信息）
-    if (success == true && message.size() % 2 == 0)
+    // 确保成功获取且数组中有好友信息的成对出现
+    if (success && (message.size() % 2 == 0))
     {
-        // message 的解析需要在调用该函数的类中的槽函数实现
-        emit friendListUpdated(message); // 将传回的好友列表作为参数传递
+        QList<QPair<QString, int>> friendList; //
+        for (int i = 0; i < message.size(); ++i) {
+            // message的每个元素又都是一个QJsonObject
+            QJsonObject friendInfo = message[i].toObject();
+
+            QString friendName = friendInfo["name"].toString();
+            int isOnline = friendInfo["isOnline"].toInt();
+
+            // 存储好友信息
+            friendList.append(qMakePair(friendName, isOnline));
+        }
+
+        // 发送更新后的好友列表信号
+        emit friendListUpdated(friendList);
     }
     else
     {
