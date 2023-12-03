@@ -103,7 +103,7 @@ bool MySocket::connectToServer()
     sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(8080);
-    serv_addr.sin_addr.S_un.S_addr = inet_addr("192.168.21.1");
+    serv_addr.sin_addr.S_un.S_addr = inet_addr("192.168.1.107");
     if (serv_addr.sin_addr.S_un.S_addr == INADDR_NONE) {
         qDebug() << "无效的IP地址";
         return false;

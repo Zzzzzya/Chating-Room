@@ -27,7 +27,7 @@ friendChat::friendChat(QWidget *parent) :
     mysocket->requestFriendList(user->userName);
     //获取数有关据库信息
     connect(mysocket,&MySocket::friendListUpdated,this,&friendChat::updateFriendListWidget);
-    showOnlineNumber(user->userFriend,user->friendIsOnline);
+    showSignalChatting();
 }
 
 friendChat::~friendChat()
@@ -45,23 +45,44 @@ void friendChat::paintEvent(QPaintEvent* )
 
 void friendChat::updateFriendListWidget(QList<QPair<QString, int>> friendList)
 {
+    //表示在线总人数
+    int cnt = 0;
+
     // 先清空 QListWidget
     ui->friendListWidget->clear();
+
+    //给user中的数组分配大小
+    user->userFriend.resize(friendList.size());
+    user->friendIsOnline.resize(friendList.size());
 
     // 遍历 friendList，并将其中的好友信息添加到 QListWidget 中
     for (const auto& friendInfo : friendList) {
         QString friendName = friendInfo.first;
         int isOnline = friendInfo.second;
 
+        //将好友信息保存起来
+        user->userFriend.push_back(friendName);
+        user->friendIsOnline.push_back(isOnline);
+
+        if(isOnline==1)
+        {
+            cnt++;
+        }
+
         // 根据在线状态，设置显示的文本
         QString statusText = (isOnline == 1) ? "在线" : "离线";
 
         // 创建 QListWidgetItem 并设置显示文本
+        ui->friendListWidget->setIconSize(QSize(30,30));
         QListWidgetItem* item = new QListWidgetItem(friendName + " - " + statusText);
+        item->setSizeHint(QSize(250,40));
 
         // 将 item 添加到 QListWidget 中
         ui->friendListWidget->addItem(item);
     }
+    //打在在线人数信息
+    QString str=QString("%1/%2").arg(cnt).arg(friendList.size());
+    ui->numShowBtn->setText(str);
 }
 
 //点击相当于没动,不用实现

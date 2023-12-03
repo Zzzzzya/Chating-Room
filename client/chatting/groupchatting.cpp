@@ -103,7 +103,6 @@ void groupChatting::on_clearBtn_clicked()
     ui->textBrowser->clear();
 }
 
-//要用到socket,先不写
 void groupChatting::on_sendBtn_clicked()
 {
     mysocket->sendGroupMessage(this->GName,user->userName,ui->textEdit->toPlainText());
